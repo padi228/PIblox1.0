@@ -82,6 +82,7 @@
 
                     <WrapPanel Grid.Row="1" Margin="0,18,0,15">
                         <Button Content="Обновить диагностику" Click="Refresh_Click" Background="#7257DB" BorderBrush="#9B87FF" Margin="0,0,8,0"/>
+                        <Button Content="Сохранить отчёт" Click="SaveReport_Click" Margin="0,0,8,0"/>
                         <Button Content="Открыть WireGuard" Click="OpenWireGuard_Click" Margin="0,0,8,0"/>
                         <Button Content="Официальная установка" Click="OpenInstallPage_Click"/>
                     </WrapPanel>
