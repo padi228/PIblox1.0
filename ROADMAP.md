@@ -1,26 +1,30 @@
 # PIblox roadmap
 
-## Stage 1: Base app
-- [x] Initial WPF scaffold
-- [x] Player / Studio detection and launch
-- [x] Local settings
-- [x] Diagnostics
-- [ ] Build and verify on Windows
+## Implemented in the current preview
+- [x] WPF desktop shell with dark purple-blue styling
+- [x] Local Roblox Player and Studio detection
+- [x] Player and Studio launch actions
+- [x] Official Roblox experience search by title, ID, or Roblox link
+- [x] Local favorites and recent links
+- [x] CPU and RAM metrics, plus a manual ping check
+- [x] Local preferences and optional per-user startup entry
+- [x] Diagnostics report copy/export
+- [x] GitHub Releases check
+- [x] Inno Setup script and Windows CI workflow
 
-## Stage 2: Launcher UX
-- [ ] Search and Discover (use supported public sources; no scraping/bypass)
-- [ ] Favorites and launch history
-- [ ] Customizable cards
+## Next development stages
+- [ ] Run and fix the Windows CI build; verify the installer on Windows 10/11
+- [ ] Add a richer Discover experience using supported Roblox endpoints or official search pages
+- [ ] Add configurable overlay after validating CPU and memory overhead
+- [ ] Add Roblox Studio project shortcuts, safe backups, and diagnostics
+- [ ] Add an update download flow with explicit user confirmation and signature/hash validation
+- [ ] Add import/export of settings
 
-## Stage 3: Developer tools
-- [ ] Studio project shortcuts
-- [ ] Project diagnostics and backups with user confirmation
-- [ ] Roblox Studio connection workflow
+## Requires separate infrastructure or external integrations
+- [ ] PADI Call: signaling service and possibly TURN relay, plus privacy and abuse controls
+- [ ] Cross-device friends and invites: authenticated backend
+- [ ] Online presence and chat: authenticated backend
+- [ ] Multi-region VPN: a legitimate third-party VPN client/provider; PIblox will not operate its own network
+- [ ] PADI 3D tools: a separate generation service or local model
 
-## Stage 4: Optional components
-- [ ] Update checks with user confirmation
-- [ ] Performance overlay (opt-in)
-- [ ] Call/voice architecture and server review
-- [ ] Installer and portable mode
-
-Features will be marked complete only after implementation and testing.
+Items under "Next development stages" and "Requires separate infrastructure" are not yet implemented.
