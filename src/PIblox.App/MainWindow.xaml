@@ -1,12 +1,12 @@
 <Window x:Class="PIblox.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="PIblox" Height="780" Width="1180" MinHeight="680" MinWidth="1000"
-        Background="#0B0E1B" Foreground="#F4F5FF" FontFamily="Segoe UI"
+        Title="PIblox" Height="820" Width="1280" MinHeight="740" MinWidth="1060"
+        Background="#080B14" Foreground="#F4F5FF" FontFamily="Segoe UI"
         WindowStartupLocation="CenterScreen">
-    <Grid Margin="22">
+    <Grid Margin="16">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="218"/>
+            <ColumnDefinition Width="204"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -14,16 +14,16 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Grid.RowSpan="2" CornerRadius="18" Padding="16" Margin="0,0,18,0">
+        <Border Grid.Column="0" Grid.RowSpan="2" CornerRadius="22" Padding="15" Margin="0,0,14,0">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#171B35" Offset="0"/>
-                    <GradientStop Color="#11172B" Offset="1"/>
+                    <GradientStop Color="#171E34" Offset="0"/>
+                    <GradientStop Color="#101726" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
             <DockPanel LastChildFill="True">
-                <StackPanel DockPanel.Dock="Top" Margin="4,8,4,24">
-                    <TextBlock Text="PIblox" FontSize="29" FontWeight="Bold" Foreground="#A99BFF"/>
+                <StackPanel DockPanel.Dock="Top" Margin="4,8,4,18">
+                    <TextBlock Text="PIblox" FontSize="27" FontWeight="Bold" Foreground="#A99BFF"/>
                     <TextBlock Text="ROBLOX LAUNCHER" FontSize="10" FontWeight="Bold" Foreground="#8792B8" Margin="2,2,0,0"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Margin="4,20,4,4">
@@ -32,19 +32,19 @@
                 </StackPanel>
                 <StackPanel>
                     <TextBlock Text="МЕНЮ" Foreground="#707B9F" FontSize="10" FontWeight="Bold" Margin="4,0,0,10"/>
-                    <Button x:Name="HomeNavButton" Content="⌂   Главная" Click="HomeNav_Click" HorizontalContentAlignment="Left" Background="#302C5C" BorderBrush="#514A91" Margin="0,0,0,5"/>
+                    <Button x:Name="HomeNavButton" Content="⌂   Главная" Click="HomeNav_Click" HorizontalContentAlignment="Left" Background="#39265F" BorderBrush="#7754D8" Margin="0,0,0,5"/>
                     <Button x:Name="DiscoverNavButton" Content="⌕   Поиск игр" Click="DiscoverNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="PerformanceNavButton" Content="▥   Производительность" Click="PerformanceNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="CallNavButton" Content="◉   PI Call" Click="CallNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="SettingsNavButton" Content="⚙   Настройки" Click="SettingsNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="DiagnosticsNavButton" Content="☷   Диагностика" Click="DiagnosticsNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Border Height="1" Background="#303858" Margin="4,18,4,16"/>
-                    <Button Content="Открыть Roblox" Click="OpenRobloxWebsite_Click" HorizontalContentAlignment="Left" Background="#202846" BorderBrush="#34416F"/>
+                    <Button Content="Открыть Roblox" Click="OpenRobloxWebsite_Click" HorizontalContentAlignment="Left" Background="#18243A" BorderBrush="#344766"/>
                 </StackPanel>
             </DockPanel>
         </Border>
 
-        <Grid Grid.Column="1" Grid.Row="0" Margin="8,0,2,12">
+        <Grid Grid.Column="1" Grid.Row="0" Margin="6,0,2,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -58,14 +58,14 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Column="1" Grid.Row="1" Margin="8,0,0,0">
+        <Grid Grid.Column="1" Grid.Row="1" Margin="6,0,0,0">
             <Grid x:Name="HomePage">
                 <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                <Border Grid.Row="0" CornerRadius="18" Padding="20" Margin="0,0,0,16">
+                <Border Grid.Row="0" CornerRadius="22" Padding="24" Margin="0,0,0,14">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#28265A" Offset="0"/>
-                            <GradientStop Color="#193B65" Offset="1"/>
+                            <GradientStop Color="#30215E" Offset="0"/>
+                            <GradientStop Color="#12426B" Offset="1"/>
                         </LinearGradientBrush>
                     </Border.Background>
                     <Grid>
@@ -80,12 +80,12 @@
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="1.08*"/><ColumnDefinition Width="0.92*"/></Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Margin="0,0,12,0">
-                        <Border Background="#151A2D" CornerRadius="16" Padding="18" Margin="0,0,0,12">
+                        <Border Background="#111827" CornerRadius="18" Padding="18" Margin="0,0,0,12">
                             <StackPanel>
                                 <TextBlock Text="Быстрый поиск Roblox" FontSize="17" FontWeight="SemiBold"/>
                                 <TextBlock Text="Введи название игры, ID или ссылку Roblox." Foreground="#929BB9" FontSize="12" Margin="0,4,0,12"/>
                                 <DockPanel>
-                                    <Button DockPanel.Dock="Right" Content="Найти" Click="HomeSearch_Click" Background="#7768E8" BorderBrush="#8E82FF" Margin="8,0,0,0"/>
+                                    <Button DockPanel.Dock="Right" Content="Найти" Click="HomeSearch_Click" Background="#8B5CF6" BorderBrush="#A78BFA" Margin="8,0,0,0"/>
                                     <TextBox x:Name="HomeSearchBox" ToolTip="Название, ID или ссылка" KeyDown="SearchBox_KeyDown"/>
                                 </DockPanel>
                                 <TextBlock Text="Поиск открывается на официальном сайте roblox.com." Foreground="#7884A8" FontSize="11" Margin="0,8,0,0"/>
@@ -93,7 +93,7 @@
                         </Border>
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Background="#151A2D" CornerRadius="16" Padding="16" Margin="0,0,6,0">
+                            <Border Grid.Column="0" Background="#111827" CornerRadius="18" Padding="17" Margin="0,0,6,0">
                                 <StackPanel>
                                     <TextBlock Text="ROBLOX PLAYER" Foreground="#8D95B7" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="Играть" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,3"/>
@@ -101,12 +101,12 @@
                                     <Button x:Name="PlayerButton" Content="Запустить" Click="LaunchPlayer_Click" Background="#7768E8" BorderBrush="#8E82FF"/>
                                 </StackPanel>
                             </Border>
-                            <Border Grid.Column="1" Background="#151A2D" CornerRadius="16" Padding="16" Margin="6,0,0,0">
+                            <Border Grid.Column="1" Background="#111827" CornerRadius="16" Padding="16" Margin="6,0,0,0">
                                 <StackPanel>
                                     <TextBlock Text="ROBLOX STUDIO" Foreground="#8D95B7" FontSize="10" FontWeight="Bold"/>
                                     <TextBlock Text="Создавать" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,3"/>
                                     <TextBlock x:Name="StudioStatus" Text="Поиск установки…" Foreground="#929BB9" FontSize="11" Margin="0,0,0,12"/>
-                                    <Button x:Name="StudioButton" Content="Открыть Studio" Click="LaunchStudio_Click" Background="#317FC9" BorderBrush="#4B9BFF"/>
+                                    <Button x:Name="StudioButton" Content="Открыть Studio" Click="LaunchStudio_Click" Background="#0891B2" BorderBrush="#38BDF8"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -140,7 +140,7 @@
                 <StackPanel>
                     <TextBlock Text="Найди следующую игру" FontSize="25" FontWeight="Bold"/>
                     <TextBlock Text="PIblox использует официальный поиск Roblox и не собирает каталог обходными методами." Foreground="#929BB9" Margin="0,6,0,18" TextWrapping="Wrap"/>
-                    <Border Background="#151A2D" CornerRadius="16" Padding="20" Margin="0,0,0,14">
+                    <Border Background="#111827" CornerRadius="18" Padding="20" Margin="0,0,0,14">
                         <StackPanel>
                             <TextBlock Text="Поиск по названию" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,10"/>
                             <DockPanel>
@@ -169,7 +169,7 @@
                     <TextBlock Text="Локальные показатели Windows. PIblox не меняет системные настройки." Foreground="#929BB9" Margin="0,6,0,18"/>
                     <Grid>
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Background="#151A2D" CornerRadius="16" Padding="22" Margin="0,0,8,0">
+                        <Border Grid.Column="0" Background="#111827" CornerRadius="18" Padding="22" Margin="0,0,8,0">
                             <StackPanel>
                                 <TextBlock Text="ЗАГРУЗКА CPU" Foreground="#8993B7" FontWeight="Bold" FontSize="11"/>
                                 <TextBlock x:Name="CpuValueText" Text="—" FontSize="34" FontWeight="Bold" Margin="0,10,0,10"/>

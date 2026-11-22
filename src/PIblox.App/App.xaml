@@ -3,18 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="AccentBrush" Color="#8270FF"/>
-        <SolidColorBrush x:Key="AccentBlueBrush" Color="#4B9BFF"/>
-        <SolidColorBrush x:Key="WindowBrush" Color="#0B0E1B"/>
-        <SolidColorBrush x:Key="PanelBrush" Color="#151A2D"/>
-        <SolidColorBrush x:Key="PanelAltBrush" Color="#1B2340"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#A2AAC7"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#8B5CF6"/>
+        <SolidColorBrush x:Key="AccentBlueBrush" Color="#38BDF8"/>
+        <SolidColorBrush x:Key="WindowBrush" Color="#080B14"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#111827"/>
+        <SolidColorBrush x:Key="PanelAltBrush" Color="#1C2540"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#9CA8C8"/>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Foreground" Value="#F6F7FF"/>
-            <Setter Property="Background" Value="#293153"/>
-            <Setter Property="BorderBrush" Value="#39436C"/>
+            <Setter Property="Background" Value="#222C47"/>
+            <Setter Property="BorderBrush" Value="#354366"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="14,9"/>
+            <Setter Property="Padding" Value="15,10"/>
             <Setter Property="Margin" Value="0,3"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -42,20 +42,20 @@
             </Setter>
         </Style>
         <Style TargetType="{x:Type TextBox}">
-            <Setter Property="Background" Value="#101529"/>
+            <Setter Property="Background" Value="#0D1423"/>
             <Setter Property="Foreground" Value="#F6F7FF"/>
-            <Setter Property="BorderBrush" Value="#343E63"/>
+            <Setter Property="BorderBrush" Value="#34415F"/>
             <Setter Property="CaretBrush" Value="#FFFFFF"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="11,9"/>
+            <Setter Property="Padding" Value="13,11"/>
             <Setter Property="FontSize" Value="13"/>
         </Style>
         <Style TargetType="{x:Type ListBox}">
             <Setter Property="Background" Value="#101529"/>
             <Setter Property="Foreground" Value="#F6F7FF"/>
-            <Setter Property="BorderBrush" Value="#293153"/>
+            <Setter Property="BorderBrush" Value="#273451"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Padding" Value="6"/>
         </Style>
         <Style TargetType="{x:Type CheckBox}">
             <Setter Property="Foreground" Value="#E7E9F7"/>
@@ -64,7 +64,7 @@
         </Style>
         <Style TargetType="{x:Type ProgressBar}">
             <Setter Property="Height" Value="8"/>
-            <Setter Property="Foreground" Value="#8270FF"/>
+            <Setter Property="Foreground" Value="#8B5CF6"/>
             <Setter Property="Background" Value="#303653"/>
         </Style>
     </Application.Resources>
