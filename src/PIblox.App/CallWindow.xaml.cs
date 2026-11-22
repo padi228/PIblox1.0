@@ -1,6 +1,5 @@
 using System.IO;
 using System.Windows;
-using System.Windows.Media;
 using Microsoft.Web.WebView2.Core;
 
 namespace PIblox.App;
@@ -63,7 +62,7 @@ public partial class CallWindow : Window
             CallBrowser.CoreWebView2.WebMessageReceived += CallBrowser_WebMessageReceived;
             CallBrowser.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             CallBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
-            CallBrowser.DefaultBackgroundColor = Color.FromRgb(11, 14, 27);
+            CallBrowser.DefaultBackgroundColor = System.Drawing.Color.FromArgb(255, 11, 14, 27);
             CallBrowser.Source = new Uri("https://piblox.local/index.html");
         }
         catch (Exception ex)
