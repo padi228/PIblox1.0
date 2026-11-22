@@ -5,3 +5,5 @@ obj/
 *.suo
 *.log
 .DS_Store
+artifacts/
+.vscode/
