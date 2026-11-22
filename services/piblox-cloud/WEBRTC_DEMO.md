@@ -20,7 +20,7 @@ Linux/macOS:
 
 Open http://127.0.0.1:8790/ in a modern browser and select **Запустить WebRTC**. The service also exposes /health. The browser gathers local ICE candidates, posts an SDP offer to /offer, and receives the generated video track.
 
-Stop the stream in the page to close the peer session. The server also closes failed peers and has a two-peer limit.
+The diagnostics show the selected ICE candidate-pair RTT (round-trip time, not one-way delay), time from pressing Start to the first decoded frame, received FPS, and decoded frame count. RTT may be unavailable in a browser and then appears as a dash. Stop the stream in the page to close the peer session. The server also closes failed peers and has a two-peer limit.
 
 ## Tests
 
