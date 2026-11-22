@@ -6,7 +6,8 @@ Write-Host "Publishing PIblox for win-x64..."
 dotnet publish "src/PIblox.App/PIblox.App.csproj" --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o "artifacts/publish"
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXITCODE" }
 
-$iscc = (Get-Command "ISCC.exe" -ErrorAction SilentlyContinue)?.Source
+$isccCommand = Get-Command "ISCC.exe" -ErrorAction SilentlyContinue
+$iscc = if ($isccCommand) { $isccCommand.Source } else { $null }
 if (-not $iscc) {
     $programFilesX86 = [Environment]::GetFolderPath("ProgramFilesX86")
     $candidate = Join-Path $programFilesX86 "Inno Setup 6\ISCC.exe"
