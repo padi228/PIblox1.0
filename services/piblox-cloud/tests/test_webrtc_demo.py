@@ -54,6 +54,14 @@ class WebRTCDemoTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 422)
         self.assertEqual(len(peers), 0)
 
+    async def test_oversized_sdp_is_rejected_before_peer_creation(self) -> None:
+        response = await self.client.post(
+            "/offer",
+            json={"type": "offer", "sdp": "x" * 200_001},
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(len(peers), 0)
+
     async def test_non_loopback_client_is_rejected(self) -> None:
         remote_transport = ASGITransport(
             app=app,
