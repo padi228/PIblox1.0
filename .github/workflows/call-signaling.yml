@@ -13,6 +13,10 @@ on:
       - ".github/workflows/call-signaling.yml"
   workflow_dispatch:
 
+concurrency:
+  group: padi-call-worker-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
