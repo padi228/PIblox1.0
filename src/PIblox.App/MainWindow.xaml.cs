@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     private readonly UpdateService _updateService = new();
     private readonly DispatcherTimer _metricsTimer;
     private AppSettings _settings;
+    private CallWindow? _callWindow;
 
     public MainWindow()
     {
@@ -89,7 +90,7 @@ public partial class MainWindow : Window
         PageTitle.Text = title;
         PageDescription.Text = description;
 
-        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, SettingsNavButton, DiagnosticsNavButton })
+        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, SettingsNavButton, DiagnosticsNavButton })
         {
             button.Background = Brushes.Transparent;
             button.BorderBrush = Brushes.Transparent;
@@ -107,6 +108,27 @@ public partial class MainWindow : Window
 
     private void PerformanceNav_Click(object sender, RoutedEventArgs e) =>
         ShowPage(PerformancePage, PerformanceNavButton, "Производительность", "Локальные показатели Windows без рискованных системных твиков");
+
+    private void CallNav_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, SettingsNavButton, DiagnosticsNavButton })
+        {
+            button.Background = Brushes.Transparent;
+            button.BorderBrush = Brushes.Transparent;
+        }
+
+        CallNavButton.Background = new SolidColorBrush(Color.FromRgb(48, 44, 92));
+        CallNavButton.BorderBrush = new SolidColorBrush(Color.FromRgb(81, 74, 145));
+
+        if (_callWindow is null || !_callWindow.IsLoaded)
+        {
+            _callWindow = new CallWindow { Owner = this };
+            _callWindow.Closed += (_, _) => _callWindow = null;
+        }
+
+        _callWindow.Show();
+        _callWindow.Activate();
+    }
 
     private void SettingsNav_Click(object sender, RoutedEventArgs e) =>
         ShowPage(SettingsPage, SettingsNavButton, "Настройки", "Локальные предпочтения и проверка обновлений");
