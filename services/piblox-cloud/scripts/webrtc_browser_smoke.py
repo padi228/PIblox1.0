@@ -85,76 +85,77 @@ def main() -> int:
         stderr=subprocess.STDOUT,
     )
 
-    browser = None
-    page = None
-    browser_errors: list[str] = []
     try:
         wait_for_server(base_url, server)
 
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(
-                headless=True,
-                args=[
-                    "--no-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--disable-features=WebRtcHideLocalIpsWithMdns",
-                ],
-            )
-            page = browser.new_page()
-            page.on("pageerror", lambda error: browser_errors.append(str(error)))
-            page.goto(base_url, wait_until="domcontentloaded", timeout=15000)
+            browser = None
+            page = None
+            browser_errors: list[str] = []
+            try:
+                browser = playwright.chromium.launch(
+                    headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-features=WebRtcHideLocalIpsWithMdns",
+                    ],
+                )
+                page = browser.new_page()
+                page.on("pageerror", lambda error: browser_errors.append(str(error)))
+                page.goto(base_url, wait_until="domcontentloaded", timeout=15000)
 
-            if page.locator("#health").inner_text() != "Доступен":
+                if page.locator("#health").inner_text() != "Доступен":
+                    page.wait_for_function(
+                        "() => document.querySelector('#health').textContent === 'Доступен'",
+                        timeout=5000,
+                    )
+
+                page.locator("#start").click()
                 page.wait_for_function(
-                    "() => document.querySelector('#health').textContent === 'Доступен'",
-                    timeout=5000,
+                    """() => {
+                        const video = document.querySelector('#video');
+                        const connection = document.querySelector('#connection');
+                        const decoded = Number(document.querySelector('#frames').textContent);
+                        return connection.textContent === 'connected'
+                            && video.readyState >= 2
+                            && video.videoWidth > 0
+                            && video.videoHeight > 0
+                            && decoded > 0;
+                    }""",
+                    timeout=30000,
+                    polling=250,
                 )
 
-            page.locator("#start").click()
-            page.wait_for_function(
-                """() => {
-                    const video = document.querySelector('#video');
-                    const connection = document.querySelector('#connection');
-                    const decoded = Number(document.querySelector('#frames').textContent);
-                    return connection.textContent === 'connected'
-                        && video.readyState >= 2
-                        && video.videoWidth > 0
-                        && video.videoHeight > 0
-                        && decoded > 0;
-                }""",
-                timeout=30000,
-                polling=250,
-            )
+                metrics = page.evaluate(
+                    """() => ({
+                        connection: document.querySelector('#connection').textContent,
+                        width: document.querySelector('#video').videoWidth,
+                        height: document.querySelector('#video').videoHeight,
+                        decodedFrames: document.querySelector('#frames').textContent,
+                        fps: document.querySelector('#fps').textContent
+                    })"""
+                )
+                print("BROWSER_STREAM_OK " + json.dumps(metrics, ensure_ascii=False))
+                wait_for_peer_count(base_url, 1)
 
-            metrics = page.evaluate(
-                """() => ({
-                    connection: document.querySelector('#connection').textContent,
-                    width: document.querySelector('#video').videoWidth,
-                    height: document.querySelector('#video').videoHeight,
-                    decodedFrames: document.querySelector('#frames').textContent,
-                    fps: document.querySelector('#fps').textContent
-                })"""
-            )
-            print("BROWSER_STREAM_OK " + json.dumps(metrics, ensure_ascii=False))
-            wait_for_peer_count(base_url, 1)
+                page.locator("#stop").click()
+                wait_for_peer_count(base_url, 0)
+                print("BROWSER_STOP_OK " + json.dumps(get_health(base_url)))
 
-            page.locator("#stop").click()
-            wait_for_peer_count(base_url, 0)
-            print("BROWSER_STOP_OK " + json.dumps(get_health(base_url)))
-
-            if browser_errors:
-                raise AssertionError("Browser JavaScript errors: " + "; ".join(browser_errors))
-            return 0
-            # Browser and page are closed before the Playwright context exits.
-        finally:
-            if page is not None:
-                try:
-                    page.close()
-                except Exception:
-                    pass
-            if browser is not None:
-                browser.close()
-                browser = None
+                if browser_errors:
+                    raise AssertionError(
+                        "Browser JavaScript errors: " + "; ".join(browser_errors)
+                    )
+                return 0
+            finally:
+                if page is not None:
+                    try:
+                        page.close()
+                    except Exception:
+                        pass
+                if browser is not None:
+                    browser.close()
     finally:
         if server.poll() is None:
             server.terminate()
