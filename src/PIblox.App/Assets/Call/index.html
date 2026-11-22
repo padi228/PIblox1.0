@@ -253,6 +253,8 @@
       socket.onopen = () => {
         setStatus("Комната открыта · ожидание участника", "wait");
         $("connectionHint").textContent = "Отправь код комнаты второму участнику PIblox.";
+        const displayName = ($("displayName").value.trim() || "Участник").slice(0, 24);
+        sendSignal("hello", { name: displayName });
       };
       socket.onmessage = async event => {
         let message;
@@ -286,11 +288,15 @@
             const candidate = new RTCIceCandidate(message.data);
             if (remoteDescriptionReady) await peer.addIceCandidate(candidate);
             else remoteCandidates.push(candidate);
+          } else if (message.type === "peer-hello") {
+            const remoteName = (message.data?.name || "Собеседник").toString().slice(0, 24);
+            $("peerName").textContent = remoteName + " · в комнате";
           } else if (message.type === "peer-left") {
             setStatus("Собеседник вышел из комнаты", "wait");
             $("peerName").textContent = "Ожидание нового участника";
           } else if (message.type === "hangup") {
             setStatus("Собеседник завершил звонок", "wait");
+            await leaveCall(false);
           }
         } catch (error) {
           console.error(error);
