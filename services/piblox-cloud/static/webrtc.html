@@ -53,6 +53,8 @@
       <h2>Диагностика потока</h2>
       <div class="metric"><span>Сервис</span><strong id="health">Проверка…</strong></div>
       <div class="metric"><span>Соединение</span><strong id="connection">Ожидание</strong></div>
+      <div class="metric"><span>RTT канала</span><strong id="rtt">—</strong></div>
+      <div class="metric"><span>До первого кадра</span><strong id="first-frame">—</strong></div>
       <div class="metric"><span>Кадры/с</span><strong id="fps">—</strong></div>
       <div class="metric"><span>Декодировано</span><strong id="frames">—</strong></div>
       <div class="metric"><span>Активные узлы</span><strong id="peers">0 / 2</strong></div>
@@ -71,9 +73,12 @@
   const fps = document.getElementById("fps");
   const frames = document.getElementById("frames");
   const peers = document.getElementById("peers");
+  const rtt = document.getElementById("rtt");
+  const firstFrame = document.getElementById("first-frame");
   let pc = null;
   let peerId = null;
   let statsTimer = null;
+  let connectStartedAt = null;
 
   function setStatus(label, live = false) {
     const dot = document.createElement("span");
@@ -131,6 +136,9 @@
     connection.textContent = "Остановлено";
     fps.textContent = "—";
     frames.textContent = "—";
+    rtt.textContent = "—";
+    firstFrame.textContent = "—";
+    connectStartedAt = null;
     setStatus("Не подключено");
     await refreshHealth();
   }
@@ -139,24 +147,49 @@
     if (!pc) return;
     try {
       const report = await pc.getStats();
+      let inboundVideo = null;
+      let selectedPair = null;
       for (const stat of report.values()) {
         if (stat.type === "inbound-rtp" && stat.kind === "video") {
-          fps.textContent = typeof stat.framesPerSecond === "number" ? stat.framesPerSecond.toFixed(1) : "—";
-          frames.textContent = typeof stat.framesDecoded === "number" ? String(stat.framesDecoded) : "—";
-          break;
+          inboundVideo = stat;
+        }
+        if (
+          stat.type === "candidate-pair"
+          && stat.state === "succeeded"
+          && stat.nominated
+          && typeof stat.currentRoundTripTime === "number"
+        ) {
+          selectedPair = stat;
         }
       }
+      if (inboundVideo) {
+        fps.textContent = typeof inboundVideo.framesPerSecond === "number" ? inboundVideo.framesPerSecond.toFixed(1) : "—";
+        frames.textContent = typeof inboundVideo.framesDecoded === "number" ? String(inboundVideo.framesDecoded) : "—";
+      }
+      rtt.textContent = selectedPair
+        ? Math.max(0, selectedPair.currentRoundTripTime * 1000).toFixed(1) + " ms"
+        : "—";
     } catch (_) {}
   }
 
   startButton.addEventListener("click", async () => {
     startButton.disabled = true;
+    connectStartedAt = performance.now();
+    firstFrame.textContent = "Ожидание…";
+    rtt.textContent = "—";
     setStatus("Создаём соединение…");
     connection.textContent = "Сигнализация";
     try {
       pc = new RTCPeerConnection({ iceServers: [] });
       pc.addTransceiver("video", { direction: "recvonly" });
       pc.ontrack = event => {
+        video.onloadeddata = () => {
+          if (connectStartedAt !== null) {
+            firstFrame.textContent = Math.max(0, Math.round(performance.now() - connectStartedAt)) + " ms";
+            connectStartedAt = null;
+          }
+          video.onloadeddata = null;
+        };
         video.srcObject = event.streams[0] || new MediaStream([event.track]);
         video.play().catch(() => {});
       };
