@@ -2,9 +2,34 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="PIblox" Height="850" Width="1320" MinHeight="740" MinWidth="1060"
-        Background="#080714" Foreground="#F4F5FF" FontFamily="Segoe UI"
+        Foreground="#F4F5FF" FontFamily="Segoe UI"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="12">
+        <!-- PIblox neon atmosphere: layered gradients and soft glow fields -->
+        <Border CornerRadius="28" IsHitTestVisible="False">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#08051B" Offset="0"/>
+                    <GradientStop Color="#101044" Offset="0.48"/>
+                    <GradientStop Color="#031B42" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <Canvas IsHitTestVisible="False" ClipToBounds="True">
+            <Ellipse Width="620" Height="400" Canvas.Left="360" Canvas.Top="-170" Opacity="0.45">
+                <Ellipse.Fill><RadialGradientBrush><GradientStop Color="#9B39FF" Offset="0"/><GradientStop Color="#4930B8" Offset="0.4"/><GradientStop Color="#00000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                <Ellipse.Effect><BlurEffect Radius="55"/></Ellipse.Effect>
+            </Ellipse>
+            <Ellipse Width="780" Height="360" Canvas.Left="500" Canvas.Top="390" Opacity="0.42">
+                <Ellipse.Fill><RadialGradientBrush><GradientStop Color="#006CFF" Offset="0"/><GradientStop Color="#3034C7" Offset="0.45"/><GradientStop Color="#00000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                <Ellipse.Effect><BlurEffect Radius="60"/></Ellipse.Effect>
+            </Ellipse>
+            <Ellipse Width="440" Height="280" Canvas.Left="-180" Canvas.Top="460" Opacity="0.34">
+                <Ellipse.Fill><RadialGradientBrush><GradientStop Color="#8B22FF" Offset="0"/><GradientStop Color="#00000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                <Ellipse.Effect><BlurEffect Radius="48"/></Ellipse.Effect>
+            </Ellipse>
+        </Canvas>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="216"/>
             <ColumnDefinition Width="*"/>
