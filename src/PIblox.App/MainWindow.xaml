@@ -4,7 +4,17 @@
         Title="PIblox" Height="850" Width="1320" MinHeight="740" MinWidth="1060" Background="#060815"
         Foreground="#F4F5FF" FontFamily="Segoe UI"
         WindowStartupLocation="CenterScreen">
-    <Grid Margin="12">\n
+    <Grid Margin="12">
+
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="216"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="68"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <!-- PIblox scenic background atmosphere -->
         <Border Grid.ColumnSpan="2" Grid.RowSpan="2" CornerRadius="28" IsHitTestVisible="False" Opacity="0.92">
             <Border.Background>
@@ -28,14 +38,6 @@
             </Ellipse>
         </Canvas>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="216"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="68"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
         <!-- PIblox neon atmosphere: layered gradients and soft glow fields -->
         <Border CornerRadius="28" IsHitTestVisible="False">
