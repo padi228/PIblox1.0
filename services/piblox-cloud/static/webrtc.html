@@ -76,7 +76,9 @@
   let statsTimer = null;
 
   function setStatus(label, live = false) {
-    status.innerHTML = '<span class="dot ' + (live ? "live" : "") + '"></span>' + label;
+    const dot = document.createElement("span");
+    dot.className = "dot" + (live ? " live" : "");
+    status.replaceChildren(dot, document.createTextNode(label));
   }
 
   async function refreshHealth() {
@@ -189,8 +191,9 @@
       await refreshHealth();
     } catch (error) {
       const message = error && error.message ? error.message : "Неизвестная ошибка";
-      setStatus("Ошибка: " + message);
       await stop();
+      setStatus("Ошибка: " + message);
+      connection.textContent = "Не удалось подключиться";
     }
   });
 
