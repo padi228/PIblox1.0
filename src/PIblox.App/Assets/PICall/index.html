@@ -112,9 +112,9 @@
   let remoteCandidates = [];
   let isMuted = false;
   let activeRoom = "";
-  let remoteDescriptionReady = false;
+  let remoteDescriptionReady = false;\n  let chatEnabled = false;\n  let chatHistory = [];
 
-  const setStatus = (text, state = "") => {
+  const chatStorageKey = () => "piCallChat:" + (activeRoom || "none");\n  const renderChat = () => {\n    const box = $("chatMessages"); box.replaceChildren();\n    chatHistory.slice(-100).forEach(item => {\n      const row = document.createElement("div"); row.style.cssText = "padding:8px 10px;border-radius:10px;background:"+(item.mine?"#25284c":"#182039");\n      const name = document.createElement("div"); name.style.cssText = "font-size:11px;color:#a99cff;margin-bottom:3px;font-weight:700"; name.textContent = item.mine ? "Ты" : (item.name || "Собеседник");\n      const body = document.createElement("div"); body.style.cssText = "font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere"; body.textContent = item.text; row.append(name,body); box.append(row);\n    }); box.scrollTop=box.scrollHeight;\n  };\n  const addChat = (text, name, mine) => {\n    chatHistory.push({text,name,mine,at:Date.now()}); chatHistory=chatHistory.slice(-100); renderChat();\n    if(activeRoom) try{localStorage.setItem(chatStorageKey(),JSON.stringify(chatHistory));}catch{}\n  };\n  const sendChat = () => { const value=$("chatInput").value.trim(); if(!value || value.length>500 || !socket || socket.readyState!==WebSocket.OPEN)return; sendSignal("chat",{text:value,name:($("displayName").value.trim()||"Участник").slice(0,24)}); addChat(value,"",true); $("chatInput").value=""; };\n  const setStatus = (text, state = "") => {
     $("statusText").textContent = text;
     $("statusDot").className = "dot" + (state ? " " + state : "");
   };
@@ -288,7 +288,7 @@
             const candidate = new RTCIceCandidate(message.data);
             if (remoteDescriptionReady) await peer.addIceCandidate(candidate);
             else remoteCandidates.push(candidate);
-          } else if (message.type === "peer-hello") {
+          } else if (message.type === "chat") {\n            const textValue=typeof message.data?.text === "string" ? message.data.text.slice(0,500) : "";\n            if(textValue) addChat(textValue,(message.data?.name||"Собеседник").toString().slice(0,24),false);\n          } else if (message.type === "peer-hello") {
             const remoteName = (message.data?.name || "Собеседник").toString().slice(0, 24);
             $("peerName").textContent = remoteName + " · в комнате";
           } else if (message.type === "peer-left") {
@@ -354,7 +354,7 @@
     setStatus("Не подключено");
   };
 
-  $("createRoom").addEventListener("click", () => startRoom(randomRoomCode()));
+  $("chatSend").addEventListener("click",sendChat);\n  $("chatInput").addEventListener("keydown",event=>{if(event.key==="Enter")sendChat();});\n  $("createRoom").addEventListener("click", () => startRoom(randomRoomCode()));
   $("joinRoom").addEventListener("click", () => {
     const code = $("roomInput").value.trim().toUpperCase();
     if (!/^[A-Z2-9]{8}$/.test(code)) {
