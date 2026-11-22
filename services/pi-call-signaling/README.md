@@ -38,7 +38,7 @@ Wrangler creates the Worker and provisions the configured SQLite-backed Durable 
 - Health endpoint: `/health`.
 - Room codes are eight random characters.
 - Maximum two active WebSocket peers per room.
-- Signaling messages accepted: `offer`, `answer`, `candidate`, and `hangup`.
+- Signaling messages accepted: `offer`, `answer`, `candidate`, `hangup`, `hello`, and bounded room chat messages.\n- Text chat is relayed live to the other peer and saved locally in the client (up to 100 recent messages per room/device). The Worker does not persist chat history.
 - No user accounts, audio storage, recording, or chat history.
 - WebSocket hibernation is used so idle rooms can hibernate.
 - Origin is restricted to `https://piblox.local`.
