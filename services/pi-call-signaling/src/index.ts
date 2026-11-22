@@ -88,7 +88,15 @@ export class CallRoom extends DurableObject<Env> {
       return;
     }
 
-    if (payload.type === "chat") {\n      const chat = payload.data as { text?: unknown; name?: unknown };\n      if (typeof chat.text !== "string" || chat.text.trim().length < 1 || chat.text.length > 500 || typeof chat.name !== "string" || chat.name.length > 24) {\n        ws.close(1008, "Invalid chat payload"); return;\n      }\n      payload.data = { text: chat.text.trim(), name: chat.name };\n    }\n\n    if (payload.type === "hello") {
+    if (payload.type === "chat") {
+      const chat = payload.data as { text?: unknown; name?: unknown };
+      if (typeof chat.text !== "string" || chat.text.trim().length < 1 || chat.text.length > 500 || typeof chat.name !== "string" || chat.name.length > 24) {
+        ws.close(1008, "Invalid chat payload"); return;
+      }
+      payload.data = { text: chat.text.trim(), name: chat.name };
+    }
+
+    if (payload.type === "hello") {
       const name = (payload.data as { name?: unknown }).name;
       if (typeof name !== "string" || name.length < 1 || name.length > 24) {
         ws.close(1008, "Invalid display name");
