@@ -14,7 +14,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Grid.RowSpan="2" CornerRadius="24" Padding="16" Margin="0,0,14,0">
+        <Border Grid.Column="0" Grid.RowSpan="2" CornerRadius="24" Padding="16" Margin="0,0,14,0" BorderBrush="#34365E" BorderThickness="1">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="#171E34" Offset="0"/>
@@ -61,7 +61,7 @@
         <Grid Grid.Column="1" Grid.Row="1" Margin="6,0,0,0">
             <Grid x:Name="HomePage">
                 <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                <Border Grid.Row="0" CornerRadius="22" Padding="18" Margin="0,0,0,12" Background="#171C37" BorderBrush="#424C80" BorderThickness="1">
+                <Border Grid.Row="0" CornerRadius="22" Padding="20" Margin="0,0,0,12" Background="#171C37" BorderBrush="#424C80" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <StackPanel>
@@ -72,7 +72,7 @@
                         <Button Grid.Column="1" Content="Войти ↗" Click="ConnectRoblox_Click" Background="#8B5CF6" BorderBrush="#A78BFA" VerticalAlignment="Center" Margin="14,0,0,0"/>
                     </Grid>
                 </Border>
-                <Border Grid.Row="1" CornerRadius="22" Padding="24" Margin="0,0,0,14">
+                <Border Grid.Row="1" CornerRadius="24" Padding="26" Margin="0,0,0,14" BorderBrush="#514B90" BorderThickness="1">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                             <GradientStop Color="#30215E" Offset="0"/>
@@ -82,10 +82,10 @@
                     <Grid>
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Твой Roblox — в одном месте ✦" FontSize="24" FontWeight="Bold"/>
+                            <TextBlock Text="Твой Roblox — в одном месте ✦" FontSize="25" FontWeight="Bold" Foreground="#F4F0FF"/>
                             <TextBlock Text="Запускай Roblox и Studio, сохраняй любимые игры и следи за системой." Foreground="#D0D5F4" Margin="0,6,0,0" TextWrapping="Wrap"/>
                         </StackPanel>
-                        <TextBlock Grid.Column="1" Text="P" FontSize="64" FontWeight="Black" Foreground="#9D91FF" VerticalAlignment="Center" Margin="24,0,14,0"/>
+                        <TextBlock Grid.Column="1" Text="✦" FontSize="68" FontWeight="Black" Foreground="#A89BFF" VerticalAlignment="Center" Margin="24,0,14,0"/>
                     </Grid>
                 </Border>
                 <Grid Grid.Row="2">
