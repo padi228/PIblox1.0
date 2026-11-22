@@ -174,6 +174,7 @@ async def stream_session(session_id: str, request: Request) -> StreamingResponse
         previous = time.monotonic()
         try:
             while session_id in _sessions:
+                session.last_seen = time.monotonic()
                 if await request.is_disconnected():
                     break
                 now = time.monotonic()
@@ -218,6 +219,9 @@ async def session_input(websocket: WebSocket, session_id: str) -> None:
     try:
         while True:
             message = await websocket.receive_json()
+            if not isinstance(message, dict):
+                await websocket.close(code=1003, reason="JSON object required")
+                return
             message_type = message.get("type")
             if message_type == "keys":
                 keys = message.get("keys", [])
