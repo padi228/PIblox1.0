@@ -19,9 +19,12 @@
 - [ ] Add Roblox Studio project shortcuts, safe backups, and diagnostics
 - [ ] Add an update download flow with explicit user confirmation and signature/hash validation
 - [ ] Add import/export of settings
+- [x] Add embedded PADI Call client UI, microphone selection, room codes, mute, compact mode, and WebRTC audio negotiation
+- [ ] Deploy and verify the Cloudflare PADI Call signaling Worker with two real devices
+- [ ] Add a managed TURN relay option for networks where direct WebRTC connectivity fails
 
 ## Requires separate infrastructure or external integrations
-- [ ] PADI Call: signaling service and possibly TURN relay, plus privacy and abuse controls
+- [x] PADI Call client and two-peer signaling Worker source; deployment, real-device test, TURN fallback, and stronger abuse controls still required
 - [ ] Cross-device friends and invites: authenticated backend
 - [ ] Online presence and chat: authenticated backend
 - [ ] Multi-region VPN: a legitimate third-party VPN client/provider; PIblox will not operate its own network
