@@ -5,16 +5,16 @@
     <Application.Resources>
         <SolidColorBrush x:Key="AccentBrush" Color="#8B5CF6"/>
         <SolidColorBrush x:Key="AccentBlueBrush" Color="#38BDF8"/>
-        <SolidColorBrush x:Key="WindowBrush" Color="#080B14"/>
-        <SolidColorBrush x:Key="PanelBrush" Color="#111827"/>
-        <SolidColorBrush x:Key="PanelAltBrush" Color="#1C2540"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#9CA8C8"/>
+        <SolidColorBrush x:Key="WindowBrush" Color="#080714"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#11152B"/>
+        <SolidColorBrush x:Key="PanelAltBrush" Color="#1B2040"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#929BB9"/>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Foreground" Value="#F6F7FF"/>
-            <Setter Property="Background" Value="#222C47"/>
-            <Setter Property="BorderBrush" Value="#354366"/>
+            <Setter Property="Background" Value="#202747"/>
+            <Setter Property="BorderBrush" Value="#39456F"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Padding" Value="15,11"/>
             <Setter Property="Margin" Value="0,3"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -42,9 +42,9 @@
             </Setter>
         </Style>
         <Style TargetType="{x:Type TextBox}">
-            <Setter Property="Background" Value="#0D1423"/>
+            <Setter Property="Background" Value="#0D1125"/>
             <Setter Property="Foreground" Value="#F6F7FF"/>
-            <Setter Property="BorderBrush" Value="#34415F"/>
+            <Setter Property="BorderBrush" Value="#39456F"/>
             <Setter Property="CaretBrush" Value="#FFFFFF"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="13,11"/>
