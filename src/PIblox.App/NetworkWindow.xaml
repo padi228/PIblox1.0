@@ -91,7 +91,7 @@
                         <TextBox x:Name="DiagnosticsTextBox" IsReadOnly="True" AcceptsReturn="True"
                                  TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
                                  Background="#090E20" Foreground="#D8DDF5" BorderBrush="#303858"
-                                 FontFamily="Consolas" FontSize="12" Padding="12"/>
+                                 FontFamily="Consolas" FontSize="12" Padding="12" Height="250"/>
                     </StackPanel>
 
                     <TextBlock Grid.Row="3" Text="PIblox пока не меняет маршруты Windows, DNS или системные сетевые настройки. Диагностика безопасна и не требует прав администратора."
