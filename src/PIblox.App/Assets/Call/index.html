@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PADI Call</title>
+  <style>
+    :root{font-family:Segoe UI,Arial,sans-serif;color:#f4f5ff;background:#0b0e1b}
+    *{box-sizing:border-box}
+    body{margin:0;padding:20px;background:radial-gradient(circle at 90% 0,#202958 0,#0b0e1b 44%);min-height:100vh}
+    .hero{margin-bottom:18px}
+    .eyebrow{color:#8e82ff;font-size:11px;font-weight:800;letter-spacing:2px}
+    h1{font-size:27px;margin:5px 0 6px}
+    .muted{color:#929bb9;font-size:13px;line-height:1.5}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .card{background:#151a2d;border:1px solid #2b3555;border-radius:16px;padding:17px;box-shadow:0 12px 32px #05071355}
+    .wide{grid-column:1/-1}
+    h2{font-size:16px;margin:0 0 12px}
+    label{display:block;color:#aab3d0;font-size:12px;margin:10px 0 6px}
+    input,select{width:100%;border:1px solid #37436b;border-radius:9px;background:#0e1428;color:#f4f5ff;padding:11px;font:inherit;outline:none}
+    input:focus,select:focus{border-color:#8270ff}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    button{border:1px solid #43507b;border-radius:9px;background:#273153;color:#f8f8ff;padding:10px 13px;font-weight:650;cursor:pointer}
+    button.primary{background:linear-gradient(110deg,#7768e8,#3b81c9);border-color:#9186ff}
+    button.danger{background:#482b48;border-color:#754b79}
+    button:disabled{opacity:.4;cursor:not-allowed}
+    .roomline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .roomcode{font:800 23px Consolas,monospace;color:#c4bcff;letter-spacing:3px;padding:8px 12px;background:#0d1429;border-radius:9px;min-width:150px;text-align:center}
+    .status{display:flex;align-items:center;gap:9px;color:#c4cbed;font-size:13px}
+    .dot{width:9px;height:9px;border-radius:50%;background:#77809e;display:inline-block}
+    .dot.ok{background:#56d6a0;box-shadow:0 0 12px #56d6a088}
+    .dot.wait{background:#f0c66b}
+    .call-controls{display:flex;gap:9px;flex-wrap:wrap}
+    .hint{font-size:11px;color:#7f8aaf;line-height:1.55;margin-top:10px}
+    .error{color:#ff9ba6}
+    .device-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+    audio{display:none}
+    body.mini{padding:12px;min-height:0}
+    body.mini .hero,body.mini #setupCard,body.mini #infoCard,body.mini .device-row{display:none}
+    body.mini .grid{display:block}
+    body.mini #callCard{padding:13px}
+    body.mini h2{margin-bottom:6px}
+    body.mini .roomcode{font-size:19px}
+    @media(max-width:700px){body{padding:12px}.grid{grid-template-columns:1fr}.wide{grid-column:auto}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="eyebrow">PIBLOX · REAL-TIME VOICE</div>
+    <h1>PADI Call</h1>
+    <div class="muted">Голосовые звонки между двумя участниками. Видео и запись не используются.</div>
+  </header>
+
+  <main class="grid">
+    <section class="card" id="setupCard">
+      <h2>Подключение</h2>
+      <label for="serverUrl">Адрес signaling-сервера Cloudflare Worker</label>
+      <input id="serverUrl" type="url" placeholder="https://your-worker.workers.dev" autocomplete="url">
+      <label for="displayName">Твоё имя в комнате</label>
+      <input id="displayName" maxlength="24" placeholder="Например, PADI" autocomplete="nickname">
+      <div class="device-row">
+        <div>
+          <label for="microphone">Микрофон</label>
+          <select id="microphone"><option value="">Системный микрофон по умолчанию</option></select>
+        </div>
+        <button id="refreshDevices" type="button">Обновить</button>
+      </div>
+      <div class="actions">
+        <button class="primary" id="createRoom" type="button">＋ Создать комнату</button>
+      </div>
+      <label for="roomInput">Код комнаты друга</label>
+      <input id="roomInput" maxlength="8" placeholder="8 символов" autocapitalize="characters" spellcheck="false">
+      <div class="actions">
+        <button id="joinRoom" type="button">Войти по коду</button>
+      </div>
+      <div class="hint">Виртуальный микрофон (например, Voicemod) можно выбрать, если он отображается в списке устройств Windows.</div>
+    </section>
+
+    <section class="card" id="callCard">
+      <h2>Текущий звонок</h2>
+      <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Не подключено</span></div>
+      <div style="margin-top:16px;color:#929bb9;font-size:11px">КОД КОМНАТЫ</div>
+      <div class="roomline" style="margin-top:7px">
+        <div class="roomcode" id="roomCode">--------</div>
+        <button id="copyCode" type="button" disabled>Копировать</button>
+      </div>
+      <div class="muted" id="peerName" style="margin-top:12px">Ожидание звонка</div>
+      <div class="call-controls" style="margin-top:15px">
+        <button id="muteButton" type="button" disabled>Микрофон выкл.</button>
+        <button class="danger" id="leaveButton" type="button" disabled>Завершить звонок</button>
+        <button id="miniModeButton" type="button">Мини-окно</button>
+      </div>
+      <p class="hint" id="connectionHint">Создай комнату и отправь код собеседнику. Не публикуй код в открытом доступе.</p>
+      <audio id="remoteAudio" autoplay playsinline></audio>
+    </section>
+
+    <section class="card wide" id="infoCard">
+      <h2>Как это работает</h2>
+      <div class="muted">После нажатия «Создать комнату» или «Войти по коду» PIblox запросит доступ к микрофону. Аудио передаётся напрямую по WebRTC; signaling-сервис нужен только для обмена данными настройки соединения.</div>
+      <div class="hint">Сейчас в проекте есть STUN, но нет TURN-реле. Поэтому некоторые сети и строгие межсетевые экраны могут не пропустить прямое соединение. Не отправляй код комнаты незнакомым людям.</div>
+    </section>
+  </main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let socket = null;
+  let peer = null;
+  let localStream = null;
+  let remoteCandidates = [];
+  let isMuted = false;
+  let activeRoom = "";
+  let remoteDescriptionReady = false;
+
+  const setStatus = (text, state = "") => {
+    $("statusText").textContent = text;
+    $("statusDot").className = "dot" + (state ? " " + state : "");
+  };
+
+  const setBusy = (busy) => {
+    $("createRoom").disabled = busy;
+    $("joinRoom").disabled = busy;
+    $("serverUrl").disabled = busy;
+    $("microphone").disabled = busy;
+    $("refreshDevices").disabled = busy;
+  };
+
+  const randomRoomCode = () => {
+    const bytes = new Uint8Array(8);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, value => alphabet[value % alphabet.length]).join("");
+  };
+
+  const normalizeServer = (raw) => {
+    const value = raw.trim();
+    if (!value) throw new Error("Сначала укажи адрес signaling-сервера.");
+    const url = new URL(value);
+    if (!["https:", "http:", "wss:", "ws:"].includes(url.protocol))
+      throw new Error("Адрес должен начинаться с HTTPS.");
+    if (url.protocol === "http:" && !["localhost", "127.0.0.1"].includes(url.hostname))
+      throw new Error("Для удалённого сервера нужен HTTPS.");
+    const protocol = (url.protocol === "https:" || url.protocol === "wss:") ? "wss:" : "ws:";
+    return protocol + "//" + url.host + "/signal/";
+  };
+
+  const sendSignal = (type, data = null) => {
+    if (socket && socket.readyState === WebSocket.OPEN)
+      socket.send(JSON.stringify({ type, data }));
+  };
+
+  const refreshMicrophones = async () => {
+    try {
+      const selected = $("microphone").value;
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const inputs = devices.filter(device => device.kind === "audioinput");
+      $("microphone").replaceChildren();
+      const fallback = document.createElement("option");
+      fallback.value = "";
+      fallback.textContent = "Системный микрофон по умолчанию";
+      $("microphone").append(fallback);
+      inputs.forEach((device, index) => {
+        const option = document.createElement("option");
+        option.value = device.deviceId;
+        option.textContent = device.label || "Микрофон " + (index + 1);
+        $("microphone").append(option);
+      });
+      if (selected && inputs.some(device => device.deviceId === selected))
+        $("microphone").value = selected;
+    } catch {
+      setStatus("Не удалось получить список микрофонов");
+    }
+  };
+
+  const setupPeer = () => {
+    peer = new RTCPeerConnection({
+      iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }]
+    });
+
+    localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+
+    peer.onicecandidate = event => {
+      if (event.candidate) sendSignal("candidate", event.candidate);
+    };
+
+    peer.ontrack = event => {
+      $("remoteAudio").srcObject = event.streams[0];
+      $("remoteAudio").play().catch(() => {
+        setStatus("Нажми на страницу, чтобы включить звук собеседника", "wait");
+      });
+      $("peerName").textContent = "Собеседник подключён";
+    };
+
+    peer.onconnectionstatechange = () => {
+      if (!peer) return;
+      if (peer.connectionState === "connected") {
+        setStatus("Звонок подключён", "ok");
+        $("connectionHint").textContent = "Аудиосвязь установлена. Микрофон можно выключить в любой момент.";
+      } else if (peer.connectionState === "disconnected") {
+        setStatus("Соединение временно прервано", "wait");
+      } else if (peer.connectionState === "failed") {
+        setStatus("Не удалось установить прямое соединение", "wait");
+        $("connectionHint").textContent = "Этой сети может потребоваться TURN-реле. Сейчас TURN в PIblox ещё не настроен.";
+      }
+    };
+  };
+
+  const createOffer = async () => {
+    if (!peer || !socket || socket.readyState !== WebSocket.OPEN) return;
+    const offer = await peer.createOffer();
+    await peer.setLocalDescription(offer);
+    sendSignal("offer", peer.localDescription);
+  };
+
+  const startRoom = async (roomCode) => {
+    if (socket || peer || localStream) await leaveCall(false);
+    let serverBase;
+    try {
+      serverBase = normalizeServer($("serverUrl").value);
+    } catch (error) {
+      setStatus(error.message);
+      return;
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia || !window.RTCPeerConnection) {
+      setStatus("WebRTC или доступ к микрофону недоступен в этой среде");
+      return;
+    }
+
+    setBusy(true);
+    setStatus("Запрашиваем доступ к микрофону…", "wait");
+    $("connectionHint").textContent = "Разреши микрофон в системном запросе, чтобы продолжить.";
+    try {
+      const microphoneId = $("microphone").value;
+      const audio = microphoneId
+        ? { deviceId: { exact: microphoneId }, echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        : { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+      localStream = await navigator.mediaDevices.getUserMedia({ audio, video: false });
+      await refreshMicrophones();
+      setupPeer();
+
+      activeRoom = roomCode;
+      $("roomCode").textContent = roomCode;
+      $("roomInput").value = roomCode;
+      $("copyCode").disabled = false;
+      $("muteButton").disabled = false;
+      $("leaveButton").disabled = false;
+      $("peerName").textContent = "Ожидаем второго участника…";
+      setStatus("Подключаемся к комнате…", "wait");
+
+      socket = new WebSocket(serverBase + encodeURIComponent(roomCode));
+      socket.onopen = () => {
+        setStatus("Комната открыта · ожидание участника", "wait");
+        $("connectionHint").textContent = "Отправь код комнаты второму участнику PIblox.";
+      };
+      socket.onmessage = async event => {
+        let message;
+        try { message = JSON.parse(event.data); } catch { return; }
+        try {
+          if (message.type === "room-state") {
+            if (message.peers === 2) {
+              $("peerName").textContent = "Участник в комнате · соединяемся…";
+              setStatus("Собеседник вошёл · устанавливаем связь", "wait");
+            } else {
+              $("peerName").textContent = "Ожидаем второго участника…";
+            }
+          } else if (message.type === "peer-joined") {
+            $("peerName").textContent = "Собеседник вошёл · устанавливаем связь…";
+            setStatus("Устанавливаем соединение…", "wait");
+            await createOffer();
+          } else if (message.type === "offer") {
+            await peer.setRemoteDescription(new RTCSessionDescription(message.data));
+            remoteDescriptionReady = true;
+            for (const candidate of remoteCandidates) await peer.addIceCandidate(candidate);
+            remoteCandidates = [];
+            const answer = await peer.createAnswer();
+            await peer.setLocalDescription(answer);
+            sendSignal("answer", peer.localDescription);
+          } else if (message.type === "answer") {
+            await peer.setRemoteDescription(new RTCSessionDescription(message.data));
+            remoteDescriptionReady = true;
+            for (const candidate of remoteCandidates) await peer.addIceCandidate(candidate);
+            remoteCandidates = [];
+          } else if (message.type === "candidate" && message.data) {
+            const candidate = new RTCIceCandidate(message.data);
+            if (remoteDescriptionReady) await peer.addIceCandidate(candidate);
+            else remoteCandidates.push(candidate);
+          } else if (message.type === "peer-left") {
+            setStatus("Собеседник вышел из комнаты", "wait");
+            $("peerName").textContent = "Ожидание нового участника";
+          } else if (message.type === "hangup") {
+            setStatus("Собеседник завершил звонок", "wait");
+          }
+        } catch (error) {
+          console.error(error);
+          setStatus("Ошибка настройки WebRTC-соединения");
+        }
+      };
+      socket.onerror = () => setStatus("Не удалось связаться с signaling-сервером");
+      socket.onclose = event => {
+        if (event.code === 409 || event.reason === "Room full")
+          setStatus("Комната уже заполнена (максимум 2 участника)");
+        else if (event.code !== 1000 && activeRoom)
+          setStatus("Соединение с signaling-сервером закрыто");
+      };
+    } catch (error) {
+      await leaveCall(false);
+      const message = error?.name === "NotAllowedError"
+        ? "Доступ к микрофону запрещён. Проверь разрешения Windows."
+        : error?.message || "Не удалось запустить звонок.";
+      setStatus(message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const leaveCall = async (notify = true) => {
+    if (notify) sendSignal("hangup");
+    if (socket) {
+      const current = socket;
+      socket = null;
+      try { current.close(1000, "Call finished"); } catch {}
+    }
+    if (peer) {
+      peer.ontrack = null;
+      peer.onicecandidate = null;
+      peer.onconnectionstatechange = null;
+      try { peer.close(); } catch {}
+      peer = null;
+    }
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
+      localStream = null;
+    }
+    $("remoteAudio").srcObject = null;
+    $("muteButton").disabled = true;
+    $("leaveButton").disabled = true;
+    $("copyCode").disabled = true;
+    $("roomCode").textContent = "--------";
+    $("peerName").textContent = "Ожидание звонка";
+    $("connectionHint").textContent = "Создай комнату и отправь код собеседнику. Не публикуй код в открытом доступе.";
+    activeRoom = "";
+    remoteCandidates = [];
+    remoteDescriptionReady = false;
+    isMuted = false;
+    $("muteButton").textContent = "Микрофон выкл.";
+    setStatus("Не подключено");
+  };
+
+  $("createRoom").addEventListener("click", () => startRoom(randomRoomCode()));
+  $("joinRoom").addEventListener("click", () => {
+    const code = $("roomInput").value.trim().toUpperCase();
+    if (!/^[A-Z2-9]{8}$/.test(code)) {
+      setStatus("Код комнаты должен содержать 8 символов A–Z или 2–9");
+      return;
+    }
+    startRoom(code);
+  });
+  $("muteButton").addEventListener("click", () => {
+    if (!localStream) return;
+    isMuted = !isMuted;
+    localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
+    $("muteButton").textContent = isMuted ? "Включить микрофон" : "Выключить микрофон";
+  });
+  $("leaveButton").addEventListener("click", () => leaveCall(true));
+  $("copyCode").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(activeRoom);
+      setStatus("Код комнаты скопирован", "ok");
+    } catch {
+      $("roomInput").focus();
+      $("roomInput").select();
+      setStatus("Выделил код — скопируй его вручную");
+    }
+  });
+  $("refreshDevices").addEventListener("click", refreshMicrophones);
+  $("miniModeButton").addEventListener("click", () => {
+    if (window.chrome?.webview) window.chrome.webview.postMessage("toggle-mini");
+    else document.body.classList.toggle("mini");
+  });
+  $("serverUrl").value = localStorage.getItem("padiCallServer") || "";
+  $("serverUrl").addEventListener("change", () => localStorage.setItem("padiCallServer", $("serverUrl").value.trim()));
+  $("displayName").value = localStorage.getItem("padiCallName") || "";
+  $("displayName").addEventListener("change", () => localStorage.setItem("padiCallName", $("displayName").value.trim()));
+  if (navigator.mediaDevices?.addEventListener)
+    navigator.mediaDevices.addEventListener("devicechange", refreshMicrophones);
+  if (window.chrome?.webview)
+    window.chrome.webview.addEventListener("message", event => document.body.classList.toggle("mini", event.data === "mini:on"));
+
+  window.PADICall = { shutdown: () => leaveCall(false) };
+  refreshMicrophones();
+})();
+</script>
+</body>
+</html>
