@@ -4,7 +4,30 @@
         Title="PIblox" Height="850" Width="1320" MinHeight="740" MinWidth="1060" Background="#060815"
         Foreground="#F4F5FF" FontFamily="Segoe UI"
         WindowStartupLocation="CenterScreen">
-    <Grid Margin="12">
+    <Grid Margin="12">\n
+        <!-- PIblox scenic background atmosphere -->
+        <Border Grid.ColumnSpan="2" Grid.RowSpan="2" CornerRadius="28" IsHitTestVisible="False" Opacity="0.92">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#030511" Offset="0"/>
+                    <GradientStop Color="#101044" Offset="0.38"/>
+                    <GradientStop Color="#24105C" Offset="0.66"/>
+                    <GradientStop Color="#061B3B" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <Canvas Grid.ColumnSpan="2" Grid.RowSpan="2" IsHitTestVisible="False" ClipToBounds="True">
+            <Ellipse Width="700" Height="500" Canvas.Left="430" Canvas.Top="-200" Opacity="0.50">
+                <Ellipse.Fill><RadialGradientBrush><GradientStop Color="#A855F7" Offset="0"/><GradientStop Color="#5126B9" Offset="0.46"/><GradientStop Color="#00000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill><Ellipse.Effect><BlurEffect Radius="48"/></Ellipse.Effect>
+            </Ellipse>
+            <Ellipse Width="900" Height="450" Canvas.Left="380" Canvas.Top="400" Opacity="0.35">
+                <Ellipse.Fill><RadialGradientBrush><GradientStop Color="#2563EB" Offset="0"/><GradientStop Color="#00000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill><Ellipse.Effect><BlurEffect Radius="52"/></Ellipse.Effect>
+            </Ellipse>
+            <Ellipse Width="460" Height="360" Canvas.Left="-180" Canvas.Top="300" Opacity="0.34">
+                <Ellipse.Fill><RadialGradientBrush><GradientStop Color="#7C3AED" Offset="0"/><GradientStop Color="#00000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill><Ellipse.Effect><BlurEffect Radius="48"/></Ellipse.Effect>
+            </Ellipse>
+        </Canvas>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="216"/>
             <ColumnDefinition Width="*"/>
