@@ -106,7 +106,9 @@ async def offer(payload: OfferPayload, request: Request) -> JSONResponse:
 
     @pc.on("connectionstatechange")
     async def on_connection_state_change() -> None:
-        if pc.connectionState in ("failed", "closed"):
+        if pc.connectionState == "closed":
+            peers.pop(peer_id, None)
+        elif pc.connectionState == "failed":
             peers.pop(peer_id, None)
             await pc.close()
 
