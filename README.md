@@ -53,3 +53,16 @@ This is an actively developed preview. The PI Call client and signaling Worker s
 ## Security
 
 PIblox only opens HTTPS links on roblox.com from its in-app game-link field. It does not ask for Roblox passwords or session cookies. Never add credentials, tokens, private data, or .env files to this public repository.
+
+
+## Roblox account connection (OAuth)
+
+PIblox uses Roblox OAuth 2.0 Authorization Code with PKCE. It opens the official Roblox authorization page in the user's browser, receives the callback only on the local loopback address, and requests only the `openid` and `profile` scopes. It does not collect Roblox passwords or browser cookies. OAuth tokens are encrypted for the current Windows user with DPAPI and are not included in exported settings.
+
+To configure the integration, the owner of the Roblox OAuth application must register an app in Creator Dashboard and add this exact redirect URI:
+
+```
+http://127.0.0.1:37127/oauth/callback/
+```
+
+Enable the `openid` and `profile` identity scopes. Copy the app's Client ID into PIblox Settings and save. A client secret must not be entered into PIblox. Roblox currently requires identity verification to register and publish OAuth apps; do not attempt to bypass that requirement. After configuration, use **Подключить Roblox** on the home page and approve the requested access on Roblox's official page.

@@ -113,6 +113,11 @@ public sealed class AppSettings
 {
     public bool StartWithWindows { get; set; }
     public bool CheckUpdatesOnStartup { get; set; } = true;
+    public string RobloxOAuthClientId { get; set; } = string.Empty;
+    public string RobloxUserId { get; set; } = string.Empty;
+    public string RobloxUsername { get; set; } = string.Empty;
+    public string RobloxDisplayName { get; set; } = string.Empty;
+    public string RobloxProfileUrl { get; set; } = string.Empty;
     public List<GameShortcut> Favorites { get; set; } = new();
     public List<GameShortcut> History { get; set; } = new();
 }

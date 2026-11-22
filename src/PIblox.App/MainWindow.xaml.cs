@@ -18,6 +18,7 @@ public partial class MainWindow : Window
     private readonly RobloxLocator _robloxLocator = new();
     private readonly SystemMetricsService _metricsService = new();
     private readonly UpdateService _updateService = new();
+    private readonly RobloxOAuthService _robloxOAuthService = new();
     private readonly DispatcherTimer _metricsTimer;
     private AppSettings _settings;
     private CallWindow? _callWindow;
@@ -28,6 +29,7 @@ public partial class MainWindow : Window
 
         _settings = _settingsService.Load();
         LoadSettingsIntoUi();
+        RefreshRobloxAccountStatus();
         RefreshRobloxDetection();
         RefreshGameLists();
         GenerateReport();
@@ -39,6 +41,7 @@ public partial class MainWindow : Window
         Loaded += async (_, _) =>
         {
             RefreshMetrics();
+            await RestoreRobloxConnectionAsync();
             if (_settings.CheckUpdatesOnStartup)
                 await CheckUpdatesAsync(showDialog: false);
         };
@@ -57,6 +60,7 @@ public partial class MainWindow : Window
         }
 
         AutoUpdateCheckBox.IsChecked = _settings.CheckUpdatesOnStartup;
+        RobloxOAuthClientIdBox.Text = _settings.RobloxOAuthClientId;
     }
 
     private void RefreshRobloxDetection()
@@ -283,28 +287,124 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ConnectRoblox_Click(object sender, RoutedEventArgs e)
+    private async void ConnectRoblox_Click(object sender, RoutedEventArgs e)
     {
+        var clientId = RobloxOAuthClientIdBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(clientId))
+        {
+            ShowPage(SettingsPage, SettingsNavButton, "Настройки", "Добавь Roblox OAuth Client ID для подключения аккаунта");
+            RobloxOAuthClientIdBox.Focus();
+            MessageBox.Show(
+                "Сначала добавь Client ID зарегистрированного OAuth-приложения Roblox в Настройках PIblox.\n\n" +
+                "Регистрацию приложения выполняет его владелец в Roblox Creator Dashboard. Пароль Roblox и cookies PIblox не нужны.",
+                "Подключение Roblox", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        _settings.RobloxOAuthClientId = clientId;
+        SaveCurrentSettings();
+        ConnectRobloxButton.IsEnabled = false;
+        AccountConnectionStatus.Text = "Ожидаем подтверждение входа в браузере…";
+        StatusText.Text = "Подключение к Roblox…";
+
         try
         {
-            LauncherService.OpenWebPage(new Uri("https://www.roblox.com/login"));
-            AccountConnectionStatus.Text = "Roblox открыт в браузере — PIblox пока не подключён";
-            StatusText.Text = "Открыт Roblox; подключения нет";
-
+            var profile = await _robloxOAuthService.ConnectAsync(clientId);
+            ApplyRobloxProfile(profile);
+            StatusText.Text = "Аккаунт Roblox подключён";
             MessageBox.Show(
-                "Вход на сайте Roblox сам по себе не подключает аккаунт к PIblox.\n\n" +
-                "Для настоящего подключения требуется настроить официальный Roblox OAuth " +
-                "для приложения PIblox (client ID и redirect URI). Эти параметры пока " +
-                "не настроены, поэтому PIblox не будет сообщать, что аккаунт подключён.\n\n" +
-                "Не вводи пароль Roblox в PIblox и не передавай приложению cookies.",
-                "Подключение Roblox",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+                $"Готово! PIblox подключён к аккаунту @{profile.Username}.\n\n" +
+                "Токены подключения сохранены в зашифрованном виде средствами Windows.",
+                "Roblox подключён", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (OperationCanceledException)
+        {
+            AccountConnectionStatus.Text = "Подключение отменено или время ожидания истекло";
+            StatusText.Text = "Подключение отменено";
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "PIblox", MessageBoxButton.OK, MessageBoxImage.Warning);
+            AccountConnectionStatus.Text = "Не удалось подключить аккаунт Roblox";
+            StatusText.Text = "Ошибка OAuth-подключения";
+            MessageBox.Show(ex.Message, "Подключение Roblox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+        finally
+        {
+            ConnectRobloxButton.IsEnabled = true;
+        }
+    }
+
+    private void DisconnectRoblox_Click(object sender, RoutedEventArgs e)
+    {
+        var answer = MessageBox.Show(
+            "Удалить сохранённое подключение Roblox с этого компьютера?\n\n" +
+            "Локальные токены PIblox будут удалены. При необходимости доступ приложения можно отдельно отозвать в настройках Roblox.",
+            "Отключить Roblox", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        if (answer != MessageBoxResult.Yes)
+            return;
+
+        _robloxOAuthService.ClearSavedConnection();
+        _settings.RobloxUserId = string.Empty;
+        _settings.RobloxUsername = string.Empty;
+        _settings.RobloxDisplayName = string.Empty;
+        _settings.RobloxProfileUrl = string.Empty;
+        SaveCurrentSettings();
+        RefreshRobloxAccountStatus();
+        StatusText.Text = "Аккаунт Roblox отключён на этом компьютере";
+    }
+
+    private void RefreshRobloxAccountStatus()
+    {
+        var connected = !string.IsNullOrWhiteSpace(_settings.RobloxUserId)
+            && !string.IsNullOrWhiteSpace(_settings.RobloxUsername);
+
+        if (connected)
+        {
+            AccountConnectionStatus.Text = $"Подключён: {_settings.RobloxDisplayName} (@{_settings.RobloxUsername})";
+            ConnectRobloxButton.Content = "Переподключить ↗";
+            DisconnectRobloxButton.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            AccountConnectionStatus.Text = "Аккаунт Roblox ещё не подключён через OAuth";
+            ConnectRobloxButton.Content = "Подключить Roblox ↗";
+            DisconnectRobloxButton.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private async Task RestoreRobloxConnectionAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_settings.RobloxUserId))
+        {
+            RefreshRobloxAccountStatus();
+            return;
+        }
+
+        RefreshRobloxAccountStatus();
+        if (string.IsNullOrWhiteSpace(_settings.RobloxOAuthClientId))
+            return;
+
+        try
+        {
+            var profile = await _robloxOAuthService.GetSavedProfileAsync(_settings.RobloxOAuthClientId);
+            if (profile is not null)
+                ApplyRobloxProfile(profile);
+        }
+        catch
+        {
+            StatusText.Text = "Профиль Roblox сохранён; для обновления войди снова";
+        }
+    }
+
+    private void ApplyRobloxProfile(RobloxProfile profile)
+    {
+        _settings.RobloxUserId = profile.UserId;
+        _settings.RobloxUsername = profile.Username;
+        _settings.RobloxDisplayName = profile.DisplayName;
+        _settings.RobloxProfileUrl = profile.ProfileUrl;
+        SaveCurrentSettings();
+        RefreshRobloxAccountStatus();
     }
 
     private void OpenRobloxWebsite_Click(object sender, RoutedEventArgs e)
@@ -375,6 +475,7 @@ public partial class MainWindow : Window
             StartupService.SetEnabled(requestedStartup);
             _settings.StartWithWindows = requestedStartup;
             _settings.CheckUpdatesOnStartup = AutoUpdateCheckBox.IsChecked == true;
+            _settings.RobloxOAuthClientId = RobloxOAuthClientIdBox.Text.Trim();
             SaveCurrentSettings();
             StatusText.Text = "Настройки сохранены";
             MessageBox.Show("Настройки сохранены.", "PIblox", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -428,6 +529,8 @@ public partial class MainWindow : Window
         {
             _settings = _settingsService.ImportFrom(dialog.FileName);
             StartupCheckBox.IsChecked = _settings.StartWithWindows;
+            RobloxOAuthClientIdBox.Text = _settings.RobloxOAuthClientId;
+            RefreshRobloxAccountStatus();
             AutoUpdateCheckBox.IsChecked = _settings.CheckUpdatesOnStartup;
             SaveCurrentSettings();
             RefreshGameLists();

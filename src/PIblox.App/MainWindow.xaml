@@ -117,10 +117,13 @@
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="Аккаунт Roblox" FontSize="18" FontWeight="SemiBold"/>
-                            <TextBlock x:Name="AccountConnectionStatus" Text="Вход через сайт — пока без OAuth-подключения к PIblox" Foreground="#929BB9" FontSize="12" Margin="0,5,0,0"/>
-                            <TextBlock Text="PIblox не получает и не сохраняет пароль или cookies." Foreground="#7884A8" FontSize="11" Margin="0,4,0,0"/>
+                            <TextBlock x:Name="AccountConnectionStatus" Text="Аккаунт Roblox ещё не подключён через OAuth" Foreground="#929BB9" FontSize="12" Margin="0,5,0,0"/>
+                            <TextBlock Text="Вход проходит на официальной странице Roblox. PIblox не запрашивает пароль и cookies." Foreground="#7884A8" FontSize="11" Margin="0,4,0,0"/>
                         </StackPanel>
-                        <Button Grid.Column="1" Content="Войти на Roblox ↗" Click="ConnectRoblox_Click" Background="#8B5CF6" BorderBrush="#A78BFA" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0">
+                            <Button x:Name="ConnectRobloxButton" Content="Подключить Roblox ↗" Click="ConnectRoblox_Click" Background="#8B5CF6" BorderBrush="#A78BFA"/>
+                            <Button x:Name="DisconnectRobloxButton" Content="Отключить" Click="DisconnectRoblox_Click" Visibility="Collapsed" Margin="0,6,0,0"/>
+                        </StackPanel>
                     </Grid>
                 </Border>
                 <Border Grid.Row="1" CornerRadius="24" Padding="26" Margin="0,0,0,14" BorderBrush="#514B90" BorderThickness="1">
@@ -263,6 +266,11 @@
                     <TextBlock Text="Настройки хранятся локально в папке профиля Windows." Foreground="#929BB9" Margin="0,6,0,18"/>
                     <Border Background="#151A2D" CornerRadius="16" Padding="22">
                         <StackPanel>
+                            <TextBlock Text="Подключение аккаунта Roblox" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,7"/>
+                            <TextBlock Text="Вставь Client ID зарегистрированного OAuth-приложения Roblox. Нужны только разрешения openid и profile." Foreground="#929BB9" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                            <TextBox x:Name="RobloxOAuthClientIdBox" Height="36" Padding="9,6" Background="#0C1024" Foreground="#F4F5FF" BorderBrush="#514B90" CaretBrush="#FFFFFF"/>
+                            <TextBlock Text="Redirect URI для регистрации приложения: http://127.0.0.1:37127/oauth/callback/" Foreground="#AFA6FF" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,3"/>
+                            <TextBlock Text="Регистрацию OAuth-приложения и проверку разработчика при необходимости выполняет владелец приложения. Client ID не является паролем; секрет в PIblox вводить не нужно." Foreground="#929BB9" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,16"/>
                             <CheckBox x:Name="StartupCheckBox" Content="Запускать PIblox при входе в Windows"/>
                             <CheckBox x:Name="AutoUpdateCheckBox" Content="Проверять новые версии при запуске PIblox"/>
                             <TextBlock Text="Обновления проверяются через GitHub Releases. Установка выполняется только после отдельного подтверждения пользователем." Foreground="#929BB9" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,12"/>
