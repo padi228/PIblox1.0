@@ -22,6 +22,7 @@ public partial class MainWindow : Window
     private readonly DispatcherTimer _metricsTimer;
     private AppSettings _settings;
     private CallWindow? _callWindow;
+    private NetworkWindow? _networkWindow;
 
     public MainWindow()
     {
@@ -94,7 +95,7 @@ public partial class MainWindow : Window
         PageTitle.Text = title;
         PageDescription.Text = description;
 
-        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, SettingsNavButton, DiagnosticsNavButton })
+        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, NetworkNavButton, SettingsNavButton, DiagnosticsNavButton })
         {
             button.Background = Brushes.Transparent;
             button.BorderBrush = Brushes.Transparent;
@@ -115,7 +116,7 @@ public partial class MainWindow : Window
 
     private void CallNav_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, SettingsNavButton, DiagnosticsNavButton })
+        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, NetworkNavButton, SettingsNavButton, DiagnosticsNavButton })
         {
             button.Background = Brushes.Transparent;
             button.BorderBrush = Brushes.Transparent;
@@ -132,6 +133,27 @@ public partial class MainWindow : Window
 
         _callWindow.Show();
         _callWindow.Activate();
+    }
+
+    private void NetworkNav_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, NetworkNavButton, SettingsNavButton, DiagnosticsNavButton })
+        {
+            button.Background = Brushes.Transparent;
+            button.BorderBrush = Brushes.Transparent;
+        }
+
+        NetworkNavButton.Background = new SolidColorBrush(Color.FromRgb(48, 44, 92));
+        NetworkNavButton.BorderBrush = new SolidColorBrush(Color.FromRgb(81, 74, 145));
+
+        if (_networkWindow is null || !_networkWindow.IsLoaded)
+        {
+            _networkWindow = new NetworkWindow { Owner = this };
+            _networkWindow.Closed += (_, _) => _networkWindow = null;
+        }
+
+        _networkWindow.Show();
+        _networkWindow.Activate();
     }
 
     private void SettingsNav_Click(object sender, RoutedEventArgs e) =>
