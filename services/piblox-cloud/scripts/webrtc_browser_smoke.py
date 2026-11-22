@@ -144,16 +144,18 @@ def main() -> int:
 
             if browser_errors:
                 raise AssertionError("Browser JavaScript errors: " + "; ".join(browser_errors))
-
-        return 0
+            return 0
+            # Browser and page are closed before the Playwright context exits.
+        finally:
+            if page is not None:
+                try:
+                    page.close()
+                except Exception:
+                    pass
+            if browser is not None:
+                browser.close()
+                browser = None
     finally:
-        if page is not None:
-            try:
-                page.close()
-            except Exception:
-                pass
-        if browser is not None:
-            browser.close()
         if server.poll() is None:
             server.terminate()
             try:
