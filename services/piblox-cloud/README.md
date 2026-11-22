@@ -19,7 +19,7 @@ Run with python server.py and open http://127.0.0.1:8787.
 - Separate FastAPI service in webrtc_demo.py.
 - Animated synthetic video track sent through WebRTC.
 - Browser test page at http://127.0.0.1:8790/.
-- Live connection state, decoded-frame count, and FPS metrics.
+- Live connection state, candidate-pair RTT, time to first decoded frame, decoded-frame count, and FPS metrics.
 - SDP size/type validation, loopback-only request checks, two-peer limit, and explicit peer cleanup.
 
 Run with python webrtc_demo.py and open http://127.0.0.1:8790. See WEBRTC_DEMO.md for details.
