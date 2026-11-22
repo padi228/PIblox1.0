@@ -27,7 +27,7 @@
                     <TextBlock Text="ROBLOX LAUNCHER" FontSize="10" FontWeight="Bold" Foreground="#8792B8" Margin="2,2,0,0"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Margin="4,20,4,4">
-                    <TextBlock Text="PIblox 1.0 · Preview" Foreground="#707B9F" FontSize="11"/>
+                    <TextBlock Text="PIblox 1.0.1 · Preview" Foreground="#707B9F" FontSize="11"/>
                     <TextBlock Text="Локальный режим" Foreground="#707B9F" FontSize="11" Margin="0,3,0,0"/>
                 </StackPanel>
                 <StackPanel>
