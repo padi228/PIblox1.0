@@ -5,7 +5,7 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>PIblox</AssemblyName>
+    <AssemblyName>PIblox</AssemblyName>\n    <ApplicationIcon>Assets\\PIblox.ico</ApplicationIcon>
     <RootNamespace>PIblox.App</RootNamespace>
     <Version>1.0.2</Version>
     <ApplicationManifest>app.manifest</ApplicationManifest>
