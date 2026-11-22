@@ -9,8 +9,8 @@ PIblox is a Windows desktop launcher scaffold for Roblox Player and Roblox Studi
 - Opens the official Roblox experience search for a game name, numeric place ID, or HTTPS roblox.com link.
 - Stores favorites and recent links locally.
 - Shows CPU and RAM usage, and can ping www.roblox.com.
-- Includes an embedded PADI Call window with microphone selection, two-person room codes, WebRTC audio peer connection, mute, and compact mode.
-- Includes the Cloudflare Durable Objects signaling Worker source in `services/padi-call-signaling`; calls remain unavailable until this Worker is deployed and its HTTPS URL is entered in PADI Call.
+- Includes an embedded PI Call window with microphone selection, two-person room codes, WebRTC audio peer connection, mute, and compact mode.
+- Includes the Cloudflare Durable Objects signaling Worker source in `services/pi-call-signaling`; calls remain unavailable until this Worker is deployed and its HTTPS URL is entered in PI Call.
 - Saves settings under %LOCALAPPDATA%\PIblox.
 - Supports an optional per-user Windows startup entry.
 - Creates and exports a local diagnostics report.
@@ -19,7 +19,7 @@ PIblox is a Windows desktop launcher scaffold for Roblox Player and Roblox Studi
 
 ## Build
 
-Requirements: Windows x64, the .NET 10 SDK, and the Microsoft Edge WebView2 Runtime for PADI Call.
+Requirements: Windows x64, the .NET 10 SDK, and the Microsoft Edge WebView2 Runtime for PI Call.
 
 For a portable self-contained build:
 
@@ -31,23 +31,23 @@ To build PIblox_Setup.exe, install Inno Setup 6 and run:
 
 GitHub Actions builds both the installer and portable ZIP on pushes to main, pull requests, or manual runs. A version tag such as v1.0.1 also publishes the generated files as a GitHub Release.
 
-## PADI Call setup
+## PI Call setup
 
-PADI Call is an audio-only WebRTC client. The media stream is peer-to-peer; the signaling Worker relays only room and WebRTC negotiation messages. The Worker source uses one Durable Object per room, limits rooms to two connected peers, and does not save audio or chat messages.
+PI Call is an audio-only WebRTC client. The media stream is peer-to-peer; the signaling Worker relays only room and WebRTC negotiation messages. The Worker source uses one Durable Object per room, limits rooms to two connected peers, and does not save audio or chat messages.
 
 To deploy the signaling service (an adult account owner should manage the Cloudflare account and review usage):
 
 1. Install Node.js 22.12 or newer.
-2. Open a terminal in `services/padi-call-signaling`.
+2. Open a terminal in `services/pi-call-signaling`.
 3. Run `npm install`, then `npx wrangler login`, then `npm run deploy`.
 4. Copy the deployed HTTPS Worker URL (for example, `https://your-worker.workers.dev`).
-5. Open PADI Call in PIblox and paste that URL into the signaling-server field. PIblox converts it to a secure WebSocket connection automatically.
+5. Open PI Call in PIblox and paste that URL into the signaling-server field. PIblox converts it to a secure WebSocket connection automatically.
 
 The client uses a public STUN server for direct connection discovery. A TURN relay is not included, so some firewalls or network configurations may prevent a peer-to-peer call. A successful code build does not prove that two real devices can connect; test with two devices and review the Cloudflare usage limits before wider use.
 
 ## Important status
 
-This is an actively developed preview. The PADI Call client and signaling Worker source are included, but the Worker has not been deployed and real two-device audio calls have not yet been verified. The Windows installer, WebView2 runtime availability, and Roblox launch still need validation on a real Windows computer. Do not treat unverified items as production-ready.
+This is an actively developed preview. The PI Call client and signaling Worker source are included, but the Worker has not been deployed and real two-device audio calls have not yet been verified. The Windows installer, WebView2 runtime availability, and Roblox launch still need validation on a real Windows computer. Do not treat unverified items as production-ready.
 
 ## Security
 

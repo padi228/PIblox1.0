@@ -14,7 +14,7 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/health" && request.method === "GET") {
-      return Response.json({ ok: true, service: "padi-call-signaling" });
+      return Response.json({ ok: true, service: "pi-call-signaling" });
     }
 
     if (request.method !== "GET" || request.headers.get("Upgrade")?.toLowerCase() !== "websocket") {
@@ -129,6 +129,6 @@ export class CallRoom extends DurableObject<Env> {
   }
 
   async webSocketError(ws: WebSocket, error: unknown): Promise<void> {
-    console.warn("PADI Call WebSocket error", error);
+    console.warn("PI Call WebSocket error", error);
   }
 }

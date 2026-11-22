@@ -1,4 +1,4 @@
-# PADI Call signaling Worker
+# PI Call signaling Worker
 
 This service coordinates two-person WebRTC audio rooms. Audio is not routed through the Worker.
 

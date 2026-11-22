@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-        Title="PADI Call · PIblox" Height="730" Width="980" MinHeight="620" MinWidth="760"
+        Title="PI Call · PIblox" Height="730" Width="980" MinHeight="620" MinWidth="760"
         Background="#0B0E1B" Foreground="#F4F5FF" FontFamily="Segoe UI"
         WindowStartupLocation="CenterOwner">
     <Grid Margin="12">
@@ -13,7 +13,7 @@
         <Border Grid.Row="0" Background="#151A2D" CornerRadius="12" Padding="14,7" Margin="0,0,0,10">
             <DockPanel>
                 <StackPanel>
-                    <TextBlock Text="PADI CALL" Foreground="#B0A5FF" FontSize="15" FontWeight="Bold"/>
+                    <TextBlock Text="PI CALL" Foreground="#B0A5FF" FontSize="15" FontWeight="Bold"/>
                     <TextBlock Text="Аудиозвонки WebRTC · микрофон включается только после нажатия кнопки комнаты"
                                Foreground="#929BB9" FontSize="10" Margin="0,2,0,0"/>
                 </StackPanel>

@@ -16,6 +16,6 @@ GitHub Actions publishes a self-contained win-x64 build, packages a portable ZIP
 
 ## Features that need a backend
 
-PADI Call needs an authenticated signaling service and possibly TURN for restrictive networks. Friends, presence, shared invites, and shared project metadata also need a backend with access controls, rate limits, abuse reporting, and data retention rules. No such backend is deployed by this repository.
+PI Call needs an authenticated signaling service and possibly TURN for restrictive networks. Friends, presence, shared invites, and shared project metadata also need a backend with access controls, rate limits, abuse reporting, and data retention rules. No such backend is deployed by this repository.
 
 The VPN concept is an integration with a legitimate installed VPN client/provider, not a PIblox VPN network. Any overlay should remain opt-in and be measured for CPU/GPU overhead before release.

@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "padi-call-signaling",
+  "name": "pi-call-signaling",
   "main": "src/index.ts",
   "compatibility_date": "2026-11-22",
   "workers_dev": true,

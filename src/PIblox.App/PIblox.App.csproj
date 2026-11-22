@@ -7,14 +7,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>PIblox</AssemblyName>
     <RootNamespace>PIblox.App</RootNamespace>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4370.26" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Assets\Call\**\*">
+    <None Update="Assets\PICall\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>

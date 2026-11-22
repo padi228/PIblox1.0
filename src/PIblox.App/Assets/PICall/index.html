@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>PADI Call</title>
+  <title>PI Call</title>
   <style>
     :root{font-family:Segoe UI,Arial,sans-serif;color:#f4f5ff;background:#0b0e1b}
     *{box-sizing:border-box}
@@ -48,7 +48,7 @@
 <body>
   <header class="hero">
     <div class="eyebrow">PIBLOX · REAL-TIME VOICE</div>
-    <h1>PADI Call</h1>
+    <h1>PI Call</h1>
     <div class="muted">Голосовые звонки между двумя участниками. Видео и запись не используются.</div>
   </header>
 
@@ -58,7 +58,7 @@
       <label for="serverUrl">Адрес signaling-сервера Cloudflare Worker</label>
       <input id="serverUrl" type="url" placeholder="https://your-worker.workers.dev" autocomplete="url">
       <label for="displayName">Твоё имя в комнате</label>
-      <input id="displayName" maxlength="24" placeholder="Например, PADI" autocomplete="nickname">
+      <input id="displayName" maxlength="24" placeholder="Например, Alex" autocomplete="nickname">
       <div class="device-row">
         <div>
           <label for="microphone">Микрофон</label>
@@ -385,16 +385,23 @@
     if (window.chrome?.webview) window.chrome.webview.postMessage("toggle-mini");
     else document.body.classList.toggle("mini");
   });
-  $("serverUrl").value = localStorage.getItem("padiCallServer") || "";
-  $("serverUrl").addEventListener("change", () => localStorage.setItem("padiCallServer", $("serverUrl").value.trim()));
-  $("displayName").value = localStorage.getItem("padiCallName") || "";
-  $("displayName").addEventListener("change", () => localStorage.setItem("padiCallName", $("displayName").value.trim()));
+  const savedServer = localStorage.getItem("piCallServer") || localStorage.getItem("padiCallServer") || "";
+  $("serverUrl").value = savedServer;
+  if (savedServer) localStorage.setItem("piCallServer", savedServer);
+  localStorage.removeItem("padiCallServer");
+  $("serverUrl").addEventListener("change", () => localStorage.setItem("piCallServer", $("serverUrl").value.trim()));
+
+  const savedName = localStorage.getItem("piCallName") || localStorage.getItem("padiCallName") || "";
+  $("displayName").value = savedName;
+  if (savedName) localStorage.setItem("piCallName", savedName);
+  localStorage.removeItem("padiCallName");
+  $("displayName").addEventListener("change", () => localStorage.setItem("piCallName", $("displayName").value.trim()));
   if (navigator.mediaDevices?.addEventListener)
     navigator.mediaDevices.addEventListener("devicechange", refreshMicrophones);
   if (window.chrome?.webview)
     window.chrome.webview.addEventListener("message", event => document.body.classList.toggle("mini", event.data === "mini:on"));
 
-  window.PADICall = { shutdown: () => leaveCall(false) };
+  window.PICall = { shutdown: () => leaveCall(false) };
   refreshMicrophones();
 })();
 </script>

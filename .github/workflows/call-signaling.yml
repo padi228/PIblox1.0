@@ -1,20 +1,20 @@
-name: Validate PADI Call signaling Worker
+name: Validate PI Call signaling Worker
 
 on:
   push:
     branches: [ main ]
     paths:
-      - "services/padi-call-signaling/**"
+      - "services/pi-call-signaling/**"
       - ".github/workflows/call-signaling.yml"
   pull_request:
     branches: [ main ]
     paths:
-      - "services/padi-call-signaling/**"
+      - "services/pi-call-signaling/**"
       - ".github/workflows/call-signaling.yml"
   workflow_dispatch:
 
 concurrency:
-  group: padi-call-worker-${{ github.ref }}
+  group: pi-call-worker-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: services/padi-call-signaling
+        working-directory: services/pi-call-signaling
     steps:
       - name: Checkout source
         uses: actions/checkout@v4

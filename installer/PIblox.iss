@@ -1,5 +1,5 @@
 #define MyAppName "PIblox"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.0.2"
 #define MyAppPublisher "PIblox Project"
 #define MyAppExeName "PIblox.exe"
 

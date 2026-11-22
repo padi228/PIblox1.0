@@ -17,7 +17,7 @@ public partial class CallWindow : Window
             try
             {
                 if (CallBrowser.CoreWebView2 is not null)
-                    await CallBrowser.CoreWebView2.ExecuteScriptAsync("window.PADICall?.shutdown()");
+                    await CallBrowser.CoreWebView2.ExecuteScriptAsync("window.PICall?.shutdown()");
             }
             catch
             {
@@ -30,10 +30,10 @@ public partial class CallWindow : Window
     {
         try
         {
-            var assetsDirectory = Path.Combine(AppContext.BaseDirectory, "Assets", "Call");
+            var assetsDirectory = Path.Combine(AppContext.BaseDirectory, "Assets", "PICall");
             var pagePath = Path.Combine(assetsDirectory, "index.html");
             if (!File.Exists(pagePath))
-                throw new FileNotFoundException("Не найден встроенный интерфейс PADI Call.", pagePath);
+                throw new FileNotFoundException("Не найден встроенный интерфейс PI Call.", pagePath);
 
             var webViewDataDirectory = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -68,8 +68,8 @@ public partial class CallWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show(
-                "Не удалось открыть PADI Call. Проверь, установлен ли Microsoft Edge WebView2 Runtime.\n\n" + ex.Message,
-                "PADI Call",
+                "Не удалось открыть PI Call. Проверь, установлен ли Microsoft Edge WebView2 Runtime.\n\n" + ex.Message,
+                "PI Call",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
             Close();
