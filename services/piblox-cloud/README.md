@@ -1,62 +1,71 @@
 # PIblox Cloud Prototype
 
-A first end-to-end prototype for PIblox Cloud using an original test scene.
+A staged prototype for testing local server-to-browser streaming with an original synthetic scene.
 
-## What works in this prototype
+## Included prototypes
+
+### MJPEG input demo — port 8787
 
 - FastAPI service with a health endpoint and short-lived in-memory sessions.
 - Server-rendered frames generated with Pillow.
 - MJPEG video stream delivered to the browser.
-- Keyboard and touch input sent back to the server over WebSocket.
+- Arrow-key/touch input sent back over WebSocket.
 - Round-trip input-channel latency display.
-- Local-only binding and loopback checks.
 
-The blue marker moves around an original test arena. This confirms the basic loop:
+Run with python server.py and open http://127.0.0.1:8787.
 
-**server simulation → rendered frames → browser video → input messages → server simulation**
+### WebRTC synthetic video demo — port 8790
+
+- Separate FastAPI service in webrtc_demo.py.
+- Animated synthetic video track sent through WebRTC.
+- Browser test page at http://127.0.0.1:8790/.
+- Live connection state, decoded-frame count, and FPS metrics.
+- SDP size/type validation, loopback-only request checks, two-peer limit, and explicit peer cleanup.
+
+Run with python webrtc_demo.py and open http://127.0.0.1:8790. See WEBRTC_DEMO.md for details.
+
+The two prototypes run independently and use different ports. The original MJPEG page remains unchanged.
 
 ## What this is not
 
 - It does not capture the Windows desktop or launch a native application.
-- It does not launch Roblox or any other third-party game.
+- It does not launch or capture Roblox or another third-party game.
 - It is not a public cloud host or a production service.
-- It does not include user accounts, payment, persistent sessions, TURN, WebRTC, hardware encoding, or multi-user isolation.
-- MJPEG is a proof-of-concept transport and is not efficient enough for a real cloud-gaming product.
+- It does not include user accounts, remote session authorization, TURN, hardware encoding, or multi-user isolation.
+- It does not establish compatibility with unsupported operating systems or third-party games.
 
-Do not expose this prototype to the public internet. It intentionally binds to 127.0.0.1 and rejects non-loopback clients. A remote deployment needs a separate security design (authentication, TLS, session authorization, abuse protection, isolation, and cost controls) before it is safe to enable.
+Do not expose either prototype to the public internet. Both are intended for local testing only. A remote service needs a separate reviewed security design before any public deployment.
 
-## Run on Windows
+## Run the MJPEG demo
 
-Requires Python 3.10 or newer.
+Python 3.10 or newer:
 
+Windows:
     py -3 -m venv .venv
     .venv\Scripts\activate
     python -m pip install -r requirements.txt
     python server.py
 
-Open http://127.0.0.1:8787.
-
-Use the arrow keys or WASD. On a touch device, use the arrow buttons. Click Stop session to close the demo session.
-
-## Run on Linux or macOS
-
+Linux/macOS:
     python3 -m venv .venv
     source .venv/bin/activate
     python -m pip install -r requirements.txt
     python server.py
 
-Then open http://127.0.0.1:8787.
+Open http://127.0.0.1:8787.
 
-## Tests
+## Run tests
+
+From this directory:
 
     python -m unittest discover -s tests -v
 
-## Next engineering milestones
+The WebRTC CI workflow runs its API regression tests on GitHub Actions. Automated API checks do not replace a real browser test of media playback.
 
-1. Replace MJPEG with a WebRTC video pipeline and measure real end-to-end frame latency.
-2. Add authenticated session creation and short-lived client credentials.
-3. Add a supervised worker process for an application explicitly permitted to run in the remote environment.
-4. Add per-session resource limits, process isolation, idle shutdown, and audit-safe logs.
-5. Add a PIblox desktop client only after the protocol and security model are stable.
+## Engineering milestones
 
-A successful local test validates only this demo pipeline; it does not prove internet-scale hosting or compatibility with any third-party game.
+1. Validate local WebRTC media delivery and collect browser-side frame/connection metrics.
+2. Add authenticated session provisioning only after a dedicated security design.
+3. Add supervised, isolated workers for applications explicitly permitted in the remote environment.
+4. Add resource quotas, idle shutdown, and auditable operational controls.
+5. Integrate a PIblox desktop client after protocol behavior and security boundaries are stable.
