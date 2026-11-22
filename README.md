@@ -4,6 +4,7 @@ PIblox is a Windows desktop launcher scaffold for Roblox Player and Roblox Studi
 
 ## Current implementation
 
+- Provides a home-screen shortcut to the official Roblox login page; credentials remain in the browser.
 - Detects common local Roblox Player and Studio installation folders.
 - Provides Player and Studio launch buttons (using Roblox URI handlers with a local executable fallback).
 - Opens the official Roblox experience search for a game name, numeric place ID, or HTTPS roblox.com link.

@@ -1,3 +1,8 @@
+## 1.0.4-preview — Roblox connection shortcut and desktop icon
+- Added a home-screen button that opens the official Roblox login page in the browser. PIblox does not collect or store account credentials.
+- Desktop icon is enabled by default during installation (can be unchecked).
+- Bumped application and installer version to 1.0.4.
+
 ## 1.0.3-preview — Roblox account shortcut
 - Added a home-screen Roblox login shortcut opening the official login page in the browser. PIblox does not collect or store passwords.
 - Desktop shortcut creation is enabled by default in the installer.

@@ -283,6 +283,20 @@ public partial class MainWindow : Window
         }
     }
 
+    private void ConnectRoblox_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            LauncherService.OpenWebPage(new Uri("https://www.roblox.com/login"));
+            AccountConnectionStatus.Text = "Открыта официальная страница входа Roblox";
+            StatusText.Text = "Открыта страница входа Roblox";
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "PIblox", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
     private void OpenRobloxWebsite_Click(object sender, RoutedEventArgs e)
     {
         try
