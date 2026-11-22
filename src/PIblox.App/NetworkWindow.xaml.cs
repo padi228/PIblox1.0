@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Windows;
+using Microsoft.Win32;
 using PIblox.App.Services;
 
 namespace PIblox.App;
@@ -98,6 +99,33 @@ public partial class NetworkWindow : Window
         {
             MessageBox.Show($"Не удалось открыть официальный сайт WireGuard.\n{ex.Message}",
                 "PIblox Network", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
+
+    private void SaveReport_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "Сохранить отчёт PIblox Network",
+            FileName = "PIbloxNetwork-Diagnostics.txt",
+            Filter = "Текстовый отчёт (*.txt)|*.txt",
+            DefaultExt = ".txt"
+        };
+
+        if (dialog.ShowDialog(this) != true)
+            return;
+
+        try
+        {
+            File.WriteAllText(dialog.FileName, DiagnosticsTextBox.Text);
+            MessageBox.Show("Отчёт сохранён.", "PIblox Network",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Не удалось сохранить отчёт.\n" + ex.Message,
+                "PIblox Network", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
