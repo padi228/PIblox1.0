@@ -62,7 +62,7 @@ PIblox uses Roblox OAuth 2.0 Authorization Code with PKCE. It opens the official
 To configure the integration, the owner of the Roblox OAuth application must register an app in Creator Dashboard and add this exact redirect URI:
 
 ```
-http://127.0.0.1:37127/oauth/callback/
+http://localhost:37127/oauth/callback/
 ```
 
 Enable the `openid` and `profile` identity scopes. Copy the app's Client ID into PIblox Settings and save. A client secret must not be entered into PIblox. Roblox currently requires identity verification to register and publish OAuth apps; do not attempt to bypass that requirement. After configuration, use **Подключить Roblox** on the home page and approve the requested access on Roblox's official page.

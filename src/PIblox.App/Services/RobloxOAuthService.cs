@@ -14,7 +14,7 @@ public sealed record RobloxProfile(string UserId, string Username, string Displa
 public sealed class RobloxOAuthService
 {
     private const int CallbackPort = 37127;
-    private const string RedirectUri = "http://127.0.0.1:37127/oauth/callback/";
+    private const string RedirectUri = "http://localhost:37127/oauth/callback/";
     private const string TokenEndpoint = "https://apis.roblox.com/oauth/v1/token";
     private const string UserInfoEndpoint = "https://apis.roblox.com/oauth/v1/userinfo";
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(30) };
@@ -22,8 +22,23 @@ public sealed class RobloxOAuthService
     public async Task<RobloxProfile> ConnectAsync(string clientId)
     {
         ValidateClientId(clientId);
-        using var listener = new TcpListener(IPAddress.Loopback, CallbackPort);
-        try { listener.Start(1); }
+        using var ipv4Listener = new TcpListener(IPAddress.Loopback, CallbackPort);
+        using var ipv6Listener = new TcpListener(IPAddress.IPv6Loopback, CallbackPort);
+        var ipv6Listening = false;
+        try
+        {
+            ipv4Listener.Start(1);
+            try
+            {
+                ipv6Listener.Server.DualMode = false;
+                ipv6Listener.Start(1);
+                ipv6Listening = true;
+            }
+            catch (SocketException)
+            {
+                // Some Windows installations have IPv6 disabled; the IPv4 loopback listener remains available.
+            }
+        }
         catch (SocketException ex)
         {
             throw new InvalidOperationException($"Не удалось открыть локальный OAuth-порт {CallbackPort}. Закрой другое приложение, использующее этот порт, и повтори попытку.", ex);
@@ -52,7 +67,7 @@ public sealed class RobloxOAuthService
             throw new InvalidOperationException("Не удалось открыть браузер для входа на официальный сайт Roblox.", ex);
         }
 
-        var code = await ReceiveAuthorizationCodeAsync(listener, state, timeout.Token);
+        var code = await ReceiveAuthorizationCodeAsync(ipv4Listener, ipv6Listener, ipv6Listening, state, timeout.Token);
         var tokens = await ExchangeCodeAsync(clientId, code, verifier, timeout.Token);
         RobloxTokenStore.Save(tokens);
         return await GetUserInfoAsync(tokens.AccessToken, timeout.Token);
@@ -74,9 +89,27 @@ public sealed class RobloxOAuthService
 
     public void ClearSavedConnection() => RobloxTokenStore.Delete();
 
-    private static async Task<string> ReceiveAuthorizationCodeAsync(TcpListener listener, string expectedState, CancellationToken ct)
+    private static async Task<TcpClient> AcceptLoopbackClientAsync(
+        TcpListener ipv4Listener, TcpListener ipv6Listener, bool ipv6Listening, CancellationToken ct)
     {
-        using var client = await listener.AcceptTcpClientAsync(ct);
+        using var acceptCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        var ipv4Task = ipv4Listener.AcceptTcpClientAsync(acceptCts.Token).AsTask();
+        if (!ipv6Listening)
+            return await ipv4Task;
+
+        var ipv6Task = ipv6Listener.AcceptTcpClientAsync(acceptCts.Token).AsTask();
+        var winner = await Task.WhenAny(ipv4Task, ipv6Task);
+        var accepted = await winner;
+        acceptCts.Cancel();
+        try { await Task.WhenAll(ipv4Task, ipv6Task); }
+        catch (OperationCanceledException) { }
+        return accepted;
+    }
+
+    private static async Task<string> ReceiveAuthorizationCodeAsync(
+        TcpListener ipv4Listener, TcpListener ipv6Listener, bool ipv6Listening, string expectedState, CancellationToken ct)
+    {
+        using var client = await AcceptLoopbackClientAsync(ipv4Listener, ipv6Listener, ipv6Listening, ct);
         if (client.Client.RemoteEndPoint is not IPEndPoint remote || !IPAddress.IsLoopback(remote.Address))
             throw new InvalidOperationException("OAuth callback пришёл не с локального компьютера.");
 
@@ -92,7 +125,7 @@ public sealed class RobloxOAuthService
         if (parts.Length < 2 || !parts[0].Equals("GET", StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException("Получен некорректный OAuth callback.");
 
-        var callbackUri = new Uri("http://127.0.0.1:" + CallbackPort + parts[1]);
+        var callbackUri = new Uri("http://localhost:" + CallbackPort + parts[1]);
         if (!callbackUri.AbsolutePath.Equals("/oauth/callback/", StringComparison.Ordinal))
             throw new InvalidOperationException("Путь OAuth callback не совпадает с ожидаемым.");
 

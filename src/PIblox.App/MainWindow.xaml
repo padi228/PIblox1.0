@@ -269,7 +269,7 @@
                             <TextBlock Text="Подключение аккаунта Roblox" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,7"/>
                             <TextBlock Text="Вставь Client ID зарегистрированного OAuth-приложения Roblox. Нужны только разрешения openid и profile." Foreground="#929BB9" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,8"/>
                             <TextBox x:Name="RobloxOAuthClientIdBox" Height="36" Padding="9,6" Background="#0C1024" Foreground="#F4F5FF" BorderBrush="#514B90" CaretBrush="#FFFFFF"/>
-                            <TextBlock Text="Redirect URI для регистрации приложения: http://127.0.0.1:37127/oauth/callback/" Foreground="#AFA6FF" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,3"/>
+                            <TextBlock Text="Redirect URI для регистрации приложения: http://localhost:37127/oauth/callback/" Foreground="#AFA6FF" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,3"/>
                             <TextBlock Text="Регистрацию OAuth-приложения и проверку разработчика при необходимости выполняет владелец приложения. Client ID не является паролем; секрет в PIblox вводить не нужно." Foreground="#929BB9" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,16"/>
                             <CheckBox x:Name="StartupCheckBox" Content="Запускать PIblox при входе в Windows"/>
                             <CheckBox x:Name="AutoUpdateCheckBox" Content="Проверять новые версии при запуске PIblox"/>
