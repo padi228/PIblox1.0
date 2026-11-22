@@ -1,0 +1,37 @@
+name: Validate PADI Call signaling Worker
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "services/padi-call-signaling/**"
+      - ".github/workflows/call-signaling.yml"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "services/padi-call-signaling/**"
+      - ".github/workflows/call-signaling.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-worker:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/padi-call-signaling
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.12"
+          cache: npm
+          cache-dependency-path: services/padi-call-signaling/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Bundle and validate Worker
+        run: npm run check
