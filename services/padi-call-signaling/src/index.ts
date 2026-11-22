@@ -47,13 +47,17 @@ export class CallRoom extends DurableObject<Env> {
     const pair = new WebSocketPair();
     const [client, server] = Object.values(pair);
     this.ctx.acceptWebSocket(server, ["call"]);
-    server.serializeAttachment({ joinedAt: Date.now() });
+    server.serializeAttachment({ joinedAt: Date.now(), displayName: "Участник" });
 
     const peers = this.ctx.getWebSockets("call");
     server.send(JSON.stringify({ type: "room-state", peers: peers.length }));
 
     if (peers.length === 2) {
       const firstPeer = peers.find(peer => peer !== server);
+      const firstPeerState = firstPeer?.deserializeAttachment() as { displayName?: string } | null;
+      if (firstPeerState?.displayName) {
+        server.send(JSON.stringify({ type: "peer-hello", data: { name: firstPeerState.displayName } }));
+      }
       firstPeer?.send(JSON.stringify({ type: "peer-joined" }));
     }
 
@@ -90,6 +94,8 @@ export class CallRoom extends DurableObject<Env> {
         ws.close(1008, "Invalid display name");
         return;
       }
+      const attachment = (ws.deserializeAttachment() ?? {}) as { joinedAt?: number; displayName?: string };
+      ws.serializeAttachment({ ...attachment, displayName: name });
     }
 
     const relayType = payload.type === "hello" ? "peer-hello" : payload.type;
