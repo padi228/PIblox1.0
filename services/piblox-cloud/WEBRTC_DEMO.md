@@ -28,7 +28,15 @@ Run the local API regression tests:
 
     python -m unittest discover -s tests -v
 
-GitHub Actions runs the same tests when files under services/piblox-cloud/ change. These tests cover the health route, browser page, SDP validation, and loopback restriction. They do not replace a manual browser test of actual media playback.
+For a real headless-browser check, install Playwright and Chromium, then run:
+
+    python -m pip install playwright
+    python -m playwright install chromium
+    python scripts/webrtc_browser_smoke.py
+
+The browser smoke test starts a temporary local server, opens the page in Chromium, completes a real WebRTC offer/answer exchange, waits for decoded video frames, and confirms that stopping the stream releases the peer session.
+
+GitHub Actions runs both API tests and the Chromium smoke test when files under services/piblox-cloud/ change. These checks validate the synthetic local transport only; they do not test desktop capture or any third-party app.
 
 ## Local-only boundary and limitations
 
