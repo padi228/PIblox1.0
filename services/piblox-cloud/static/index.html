@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>PIblox Cloud · Prototype</title>
+  <title>PIblox Cloud · Прототип</title>
   <style>
     :root { color-scheme: dark; --bg:#0a0d1d; --panel:#131a31; --line:#29345d; --text:#eef0ff; --muted:#a4accd; --accent:#8b7cff; --blue:#53b5ff; }
     * { box-sizing:border-box; }
@@ -39,37 +39,37 @@
   <header>
     <div class="brand">
       <div class="mark">P</div>
-      <div><h1>PIblox Cloud</h1><div class="sub">Streaming technology · local prototype</div></div>
+      <div><h1>PIblox Cloud</h1><div class="sub">Облачный игровой стриминг · локальный прототип</div></div>
     </div>
-    <div class="pill">ORIGINAL TEST SCENE · NO THIRD-PARTY GAME</div>
+    <div class="pill">СОБСТВЕННАЯ ТЕСТОВАЯ СЦЕНА · БЕЗ СТОРОННИХ ИГР</div>
   </header>
 
   <div class="layout">
     <section class="panel">
       <div class="screen-wrap">
-        <div id="placeholder" class="screen-placeholder">Create a test session to start the server-rendered demo.</div>
+        <div id="placeholder" class="screen-placeholder">Создайте тестовую сессию, чтобы запустить сцену, которую отрисовывает сервер.</div>
         <img id="screen" alt="Live server-rendered PIblox Cloud test scene" hidden>
       </div>
       <div class="controls">
-        <button id="start">Start test session</button>
-        <button id="stop" class="secondary" disabled>Stop session</button>
-        <span class="status" id="connection"><span class="dot"></span>Not connected</span>
+        <button id="start">Запустить тестовую сессию</button>
+        <button id="stop" class="secondary" disabled>Остановить сессию</button>
+        <span class="status" id="connection"><span class="dot"></span>Нет подключения</span>
       </div>
-      <div class="touch" aria-label="Touch controls">
+      <div class="touch" aria-label="Сенсорное управление">
         <span></span><button data-key="ArrowUp">↑</button><span></span>
         <button data-key="ArrowLeft">←</button><button data-key="ArrowDown">↓</button><button data-key="ArrowRight">→</button>
       </div>
-      <p class="hint">Use the arrow keys or WASD to move the blue marker. Frames are drawn on the server and delivered as an MJPEG stream; controls travel back over WebSocket.</p>
+      <p class="hint">Используйте стрелки или WASD, чтобы двигать синий маркер. Сервер создаёт кадры и передаёт их через MJPEG, а управление возвращается по WebSocket.</p>
     </section>
 
     <aside class="panel">
-      <h2 style="font-size:16px;margin:2px 0 10px">Session monitor</h2>
-      <div class="metric"><span>Service</span><strong id="service">Checking…</strong></div>
-      <div class="metric"><span>Connection</span><strong id="state">Stopped</strong></div>
-      <div class="metric"><span>Round trip</span><strong id="latency">—</strong></div>
-      <div class="metric"><span>Stream</span><strong>MJPEG · 15 FPS target</strong></div>
-      <div class="metric"><span>Sessions</span><strong id="sessions">0 / 2</strong></div>
-      <p class="hint">This preview runs on the same computer by default. It is not a hosted cloud service yet and must not be exposed to the public internet.</p>
+      <h2 style="font-size:16px;margin:2px 0 10px">Монитор сессии</h2>
+      <div class="metric"><span>Сервис</span><strong id="service">Проверка…</strong></div>
+      <div class="metric"><span>Подключение</span><strong id="state">Остановлено</strong></div>
+      <div class="metric"><span>Задержка ответа</span><strong id="latency">—</strong></div>
+      <div class="metric"><span>Видеопоток</span><strong>MJPEG · 15 FPS target</strong></div>
+      <div class="metric"><span>Сессии</span><strong id="sessions">0 / 2</strong></div>
+      <p class="hint">По умолчанию эта версия работает на том же компьютере. Это ещё не размещённый в интернете облачный сервис; не открывайте к нему публичный доступ.</p>
     </aside>
   </div>
 </main>
@@ -89,9 +89,9 @@
   let socket = null;
   let pingTimer = null;
 
-  function setConnection(text, live) {
+  function setПодключение(text, live) {
     connection.innerHTML = '<span class="dot ' + (live ? "live" : "") + '"></span>' + text;
-    state.textContent = live ? "Connected" : "Stopped";
+    state.textContent = live ? "Connected" : "Остановлено";
   }
 
   async function refreshHealth() {
@@ -99,10 +99,10 @@
       const response = await fetch("/api/health");
       if (!response.ok) throw new Error("health request failed");
       const data = await response.json();
-      service.textContent = data.ok ? "Online" : "Unavailable";
+      service.textContent = data.ok ? "В сети" : "Недоступен";
       sessions.textContent = data.active_sessions + " / 2";
     } catch (_) {
-      service.textContent = "Unavailable";
+      service.textContent = "Недоступен";
     }
   }
 
@@ -165,13 +165,13 @@
     startButton.disabled = false;
     stopButton.disabled = true;
     latency.textContent = "—";
-    setConnection("Not connected", false);
+    setПодключение("Нет подключения", false);
     await refreshHealth();
   }
 
   startButton.addEventListener("click", async () => {
     startButton.disabled = true;
-    setConnection("Creating session…", false);
+    setПодключение("Создаём сессию…", false);
     try {
       const response = await fetch("/api/sessions", { method: "POST" });
       if (!response.ok) throw new Error(await response.text());
@@ -185,7 +185,7 @@
       const wsProtocol = location.protocol === "https:" ? "wss:" : "ws:";
       socket = new WebSocket(wsProtocol + "//" + location.host + "/ws/sessions/" + encodeURIComponent(sessionId));
       socket.onopen = () => {
-        setConnection("Live stream connected", true);
+        setПодключение("Видеопоток подключён", true);
         stopButton.disabled = false;
         pingTimer = setInterval(() => {
           if (socket && socket.readyState === WebSocket.OPEN) {
@@ -200,14 +200,14 @@
           latency.textContent = Math.max(0, Math.round(performance.now() - data.sent_at)) + " ms";
         }
       };
-      socket.onerror = () => setConnection("Control channel error", false);
+      socket.onerror = () => setПодключение("Ошибка канала управления", false);
       socket.onclose = () => {
-        if (sessionId) setConnection("Control channel closed", false);
+        if (sessionId) setПодключение("Канал управления закрыт", false);
       };
-      screen.onerror = () => setConnection("Video stream unavailable", false);
+      screen.onerror = () => setПодключение("Видеопоток недоступен", false);
       await refreshHealth();
     } catch (error) {
-      alert("Could not start the test session: " + error.message);
+      alert("Не удалось запустить тестовую сессию: " + error.message);
       await stopSession();
     }
   });
