@@ -8,20 +8,20 @@
   <style>
     :root{font-family:Segoe UI,Arial,sans-serif;color:#f4f5ff;background:#0b0e1b}
     *{box-sizing:border-box}
-    body{margin:0;padding:20px;background:radial-gradient(circle at 90% 0,#202958 0,#0b0e1b 44%);min-height:100vh}
-    .hero{margin-bottom:18px}
+    body{margin:0;padding:22px;background:radial-gradient(ellipse at 10% 0%,#342765 0,transparent 40%),radial-gradient(ellipse at 90% 12%,#163b68 0,transparent 36%),linear-gradient(145deg,#080b16,#101729 55%,#080b16);min-height:100vh}
+    .hero{margin-bottom:22px;padding:24px;border:1px solid #343b69;border-radius:22px;background:linear-gradient(125deg,#252b55aa,#111729cc);box-shadow:0 18px 45px #03040c66;backdrop-filter:blur(14px)}
     .eyebrow{color:#8e82ff;font-size:11px;font-weight:800;letter-spacing:2px}
     h1{font-size:27px;margin:5px 0 6px}
     .muted{color:#929bb9;font-size:13px;line-height:1.5}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .card{background:#151a2d;border:1px solid #2b3555;border-radius:16px;padding:17px;box-shadow:0 12px 32px #05071355}
+    .card{background:linear-gradient(145deg,#171d33ee,#111729ee);border:1px solid #354064;border-radius:18px;padding:19px;box-shadow:0 16px 38px #05071370;backdrop-filter:blur(12px)}
     .wide{grid-column:1/-1}
     h2{font-size:16px;margin:0 0 12px}
     label{display:block;color:#aab3d0;font-size:12px;margin:10px 0 6px}
     input,select{width:100%;border:1px solid #37436b;border-radius:9px;background:#0e1428;color:#f4f5ff;padding:11px;font:inherit;outline:none}
     input:focus,select:focus{border-color:#8270ff}
     .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    button{border:1px solid #43507b;border-radius:9px;background:#273153;color:#f8f8ff;padding:10px 13px;font-weight:650;cursor:pointer}
+    button{border:1px solid #465582;border-radius:11px;background:linear-gradient(135deg,#273153,#202943);color:#f8f8ff;padding:11px 14px;font-weight:650;cursor:pointer;transition:transform .15s,border-color .15s,filter .15s}button:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.12);border-color:#8277ff}
     button.primary{background:linear-gradient(110deg,#7768e8,#3b81c9);border-color:#9186ff}
     button.danger{background:#482b48;border-color:#754b79}
     button:disabled{opacity:.4;cursor:not-allowed}
@@ -36,8 +36,13 @@
     .error{color:#ff9ba6}
     .device-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
     audio{display:none}
+    #chatCard{display:flex;flex-direction:column;min-height:340px}
+    #chatMessages{display:flex;flex-direction:column;gap:8px;overflow:auto;max-height:300px;min-height:120px;padding:10px;background:#090e1c88;border:1px solid #273252;border-radius:12px}
+    .chat-compose{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+    .chat-note{font-size:11px;color:#8793b5;margin-top:7px}
+    @media(max-width:700px){.hero{padding:17px}}
     body.mini{padding:12px;min-height:0}
-    body.mini .hero,body.mini #setupCard,body.mini #infoCard,body.mini .device-row{display:none}
+    body.mini .hero,body.mini #setupCard,body.mini #infoCard,body.mini #chatCard,body.mini .device-row{display:none}
     body.mini .grid{display:block}
     body.mini #callCard{padding:13px}
     body.mini h2{margin-bottom:6px}
@@ -95,6 +100,13 @@
       <audio id="remoteAudio" autoplay playsinline></audio>
     </section>
 
+    <section class="card" id="chatCard">
+      <h2>Чат комнаты</h2>
+      <div id="chatMessages" aria-live="polite"></div>
+      <div class="chat-compose"><input id="chatInput" maxlength="500" placeholder="Сообщение (до 500 символов)" autocomplete="off"><button id="chatSend" type="button">Отправить</button></div>
+      <div class="chat-note">История сохраняется только на этом устройстве. Не отправляй личные данные.</div>
+    </section>
+
     <section class="card wide" id="infoCard">
       <h2>Как это работает</h2>
       <div class="muted">После нажатия «Создать комнату» или «Войти по коду» PIblox запросит доступ к микрофону. Аудио передаётся напрямую по WebRTC; signaling-сервис нужен только для обмена данными настройки соединения.</div>
@@ -112,9 +124,25 @@
   let remoteCandidates = [];
   let isMuted = false;
   let activeRoom = "";
-  let remoteDescriptionReady = false;\n  let chatEnabled = false;\n  let chatHistory = [];
+  let remoteDescriptionReady = false;
+  let chatEnabled = false;
+  let chatHistory = [];
 
-  const chatStorageKey = () => "piCallChat:" + (activeRoom || "none");\n  const renderChat = () => {\n    const box = $("chatMessages"); box.replaceChildren();\n    chatHistory.slice(-100).forEach(item => {\n      const row = document.createElement("div"); row.style.cssText = "padding:8px 10px;border-radius:10px;background:"+(item.mine?"#25284c":"#182039");\n      const name = document.createElement("div"); name.style.cssText = "font-size:11px;color:#a99cff;margin-bottom:3px;font-weight:700"; name.textContent = item.mine ? "Ты" : (item.name || "Собеседник");\n      const body = document.createElement("div"); body.style.cssText = "font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere"; body.textContent = item.text; row.append(name,body); box.append(row);\n    }); box.scrollTop=box.scrollHeight;\n  };\n  const addChat = (text, name, mine) => {\n    chatHistory.push({text,name,mine,at:Date.now()}); chatHistory=chatHistory.slice(-100); renderChat();\n    if(activeRoom) try{localStorage.setItem(chatStorageKey(),JSON.stringify(chatHistory));}catch{}\n  };\n  const sendChat = () => { const value=$("chatInput").value.trim(); if(!value || value.length>500 || !socket || socket.readyState!==WebSocket.OPEN)return; sendSignal("chat",{text:value,name:($("displayName").value.trim()||"Участник").slice(0,24)}); addChat(value,"",true); $("chatInput").value=""; };\n  const setStatus = (text, state = "") => {
+  const chatStorageKey = () => "piCallChat:" + (activeRoom || "none");
+  const renderChat = () => {
+    const box = $("chatMessages"); box.replaceChildren();
+    chatHistory.slice(-100).forEach(item => {
+      const row = document.createElement("div"); row.style.cssText = "padding:8px 10px;border-radius:10px;background:"+(item.mine?"#25284c":"#182039");
+      const name = document.createElement("div"); name.style.cssText = "font-size:11px;color:#a99cff;margin-bottom:3px;font-weight:700"; name.textContent = item.mine ? "Ты" : (item.name || "Собеседник");
+      const body = document.createElement("div"); body.style.cssText = "font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere"; body.textContent = item.text; row.append(name,body); box.append(row);
+    }); box.scrollTop=box.scrollHeight;
+  };
+  const addChat = (text, name, mine) => {
+    chatHistory.push({text,name,mine,at:Date.now()}); chatHistory=chatHistory.slice(-100); renderChat();
+    if(activeRoom) try{localStorage.setItem(chatStorageKey(),JSON.stringify(chatHistory));}catch{}
+  };
+  const sendChat = () => { const value=$("chatInput").value.trim(); if(!value || value.length>500 || !socket || socket.readyState!==WebSocket.OPEN)return; sendSignal("chat",{text:value,name:($("displayName").value.trim()||"Участник").slice(0,24)}); addChat(value,"",true); $("chatInput").value=""; };
+  const setStatus = (text, state = "") => {
     $("statusText").textContent = text;
     $("statusDot").className = "dot" + (state ? " " + state : "");
   };
@@ -288,7 +316,10 @@
             const candidate = new RTCIceCandidate(message.data);
             if (remoteDescriptionReady) await peer.addIceCandidate(candidate);
             else remoteCandidates.push(candidate);
-          } else if (message.type === "chat") {\n            const textValue=typeof message.data?.text === "string" ? message.data.text.slice(0,500) : "";\n            if(textValue) addChat(textValue,(message.data?.name||"Собеседник").toString().slice(0,24),false);\n          } else if (message.type === "peer-hello") {
+          } else if (message.type === "chat") {
+            const textValue=typeof message.data?.text === "string" ? message.data.text.slice(0,500) : "";
+            if(textValue) addChat(textValue,(message.data?.name||"Собеседник").toString().slice(0,24),false);
+          } else if (message.type === "peer-hello") {
             const remoteName = (message.data?.name || "Собеседник").toString().slice(0, 24);
             $("peerName").textContent = remoteName + " · в комнате";
           } else if (message.type === "peer-left") {
@@ -354,7 +385,9 @@
     setStatus("Не подключено");
   };
 
-  $("chatSend").addEventListener("click",sendChat);\n  $("chatInput").addEventListener("keydown",event=>{if(event.key==="Enter")sendChat();});\n  $("createRoom").addEventListener("click", () => startRoom(randomRoomCode()));
+  $("chatSend").addEventListener("click",sendChat);
+  $("chatInput").addEventListener("keydown",event=>{if(event.key==="Enter")sendChat();});
+  $("createRoom").addEventListener("click", () => startRoom(randomRoomCode()));
   $("joinRoom").addEventListener("click", () => {
     const code = $("roomInput").value.trim().toUpperCase();
     if (!/^[A-Z2-9]{8}$/.test(code)) {
