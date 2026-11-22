@@ -1,16 +1,54 @@
-name: Build
+name: Build PIblox for Windows
+
 on:
   push:
     branches: [ main ]
+    tags: [ "v*" ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
-  build:
+  windows-build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - name: Build
-        run: dotnet build src/PIblox.App/PIblox.App.csproj --configuration Release
+      - name: Publish self-contained Windows app
+        run: dotnet publish src/PIblox.App/PIblox.App.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/publish
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+      - name: Build Windows installer
+        shell: pwsh
+        run: |
+          $iscc = Join-Path ([Environment]::GetFolderPath("ProgramFilesX86")) "Inno Setup 6\ISCC.exe"
+          if (!(Test-Path $iscc)) { throw "Inno Setup compiler was not found at $iscc" }
+          & $iscc /Qp installer\PIblox.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Package portable version
+        shell: pwsh
+        run: |
+          Compress-Archive -Path artifacts\publish\* -DestinationPath artifacts\PIblox_Portable_win-x64.zip -Force
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: PIblox-Windows-${{ github.sha }}
+          path: |
+            artifacts/PIblox_Setup.exe
+            artifacts/PIblox_Portable_win-x64.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Attach binaries to tagged GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create $env:GITHUB_REF_NAME artifacts\PIblox_Setup.exe artifacts\PIblox_Portable_win-x64.zip --generate-notes
