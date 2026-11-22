@@ -288,8 +288,18 @@ public partial class MainWindow : Window
         try
         {
             LauncherService.OpenWebPage(new Uri("https://www.roblox.com/login"));
-            AccountConnectionStatus.Text = "Открыта официальная страница входа Roblox";
-            StatusText.Text = "Открыта страница входа Roblox";
+            AccountConnectionStatus.Text = "Roblox открыт в браузере — PIblox пока не подключён";
+            StatusText.Text = "Открыт Roblox; подключения нет";
+
+            MessageBox.Show(
+                "Вход на сайте Roblox сам по себе не подключает аккаунт к PIblox.\n\n" +
+                "Для настоящего подключения требуется настроить официальный Roblox OAuth " +
+                "для приложения PIblox (client ID и redirect URI). Эти параметры пока " +
+                "не настроены, поэтому PIblox не будет сообщать, что аккаунт подключён.\n\n" +
+                "Не вводи пароль Roblox в PIblox и не передавай приложению cookies.",
+                "Подключение Roblox",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
