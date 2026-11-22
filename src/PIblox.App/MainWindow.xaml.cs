@@ -221,6 +221,28 @@ public partial class MainWindow : Window
     private void FavoritesList_MouseDoubleClick(object sender, MouseButtonEventArgs e) => OpenSelectedShortcut(FavoritesList.SelectedItem as GameShortcut);
     private void HistoryList_MouseDoubleClick(object sender, MouseButtonEventArgs e) => OpenSelectedShortcut(HistoryList.SelectedItem as GameShortcut);
 
+    private void RemoveFavorite_Click(object sender, RoutedEventArgs e)
+    {
+        if (FavoritesList.SelectedItem is not GameShortcut selected)
+        {
+            StatusText.Text = "Сначала выбери избранное";
+            return;
+        }
+
+        _settings.Favorites.Remove(selected);
+        SaveCurrentSettings();
+        RefreshGameLists();
+        StatusText.Text = "Удалено из избранного";
+    }
+
+    private void ClearHistory_Click(object sender, RoutedEventArgs e)
+    {
+        _settings.History.Clear();
+        SaveCurrentSettings();
+        RefreshGameLists();
+        StatusText.Text = "История очищена";
+    }
+
     private void OpenSelectedShortcut(GameShortcut? shortcut)
     {
         if (shortcut is null)
@@ -318,8 +340,61 @@ public partial class MainWindow : Window
 
     private void SaveCurrentSettings()
     {
-        _settings.CheckUpdatesOnStartup = AutoUpdateCheckBox.IsChecked == true || _settings.CheckUpdatesOnStartup;
         _settingsService.Save(_settings);
+    }
+
+    private void ExportSettings_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "Экспорт настроек PIblox",
+            Filter = "Файл настроек PIblox (*.json)|*.json",
+            FileName = "PIblox_Settings.json"
+        };
+
+        if (dialog.ShowDialog() != true)
+            return;
+
+        try
+        {
+            _settingsService.ExportTo(dialog.FileName, _settings);
+            StatusText.Text = "Настройки экспортированы";
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Экспорт настроек", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void ImportSettings_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Импорт настроек PIblox",
+            Filter = "Файл настроек PIblox (*.json)|*.json"
+        };
+
+        if (dialog.ShowDialog() != true)
+            return;
+
+        try
+        {
+            _settings = _settingsService.ImportFrom(dialog.FileName);
+            StartupCheckBox.IsChecked = _settings.StartWithWindows;
+            AutoUpdateCheckBox.IsChecked = _settings.CheckUpdatesOnStartup;
+            SaveCurrentSettings();
+            RefreshGameLists();
+            StatusText.Text = "Настройки импортированы";
+            MessageBox.Show(
+                "Настройки импортированы. Чтобы применить запуск PIblox вместе с Windows, проверь этот параметр и нажми «Сохранить настройки».",
+                "PIblox",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Импорт настроек", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     private void OpenSettingsFolder_Click(object sender, RoutedEventArgs e)
