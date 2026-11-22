@@ -1,3 +1,11 @@
+# Changelog
+
+## 1.0.5-preview / Build 85 — visual refresh
+- Updated the PIblox home screen branding and simplified labels for search, account sign-in and Player/Studio cards.
+- Polished shared button/control styling.
+- Clarified that Roblox sign-in opens the official website only; account OAuth connection is not yet configured.
+- PI Call remains experimental and requires a deployed signaling Worker URL; no TURN relay is included.
+
 ## 1.0.4-preview — Roblox connection shortcut and desktop icon
 - Added a home-screen button that opens the official Roblox login page in the browser. PIblox does not collect or store account credentials.
 - Desktop icon is enabled by default during installation (can be unchecked).
@@ -12,7 +20,7 @@
 - Renamed the signaling Worker package and source directory to `pi-call-signaling`.
 - Migrated saved signaling-server and display-name settings to the new `piCall` keys while preserving existing values.
 
-# Changelog
+
 
 ## 1.0.0-preview — expanded scaffold
 - Redesigned the WPF interface with a dark purple-blue theme and navigation sections.
