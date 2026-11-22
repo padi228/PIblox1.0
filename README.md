@@ -30,7 +30,7 @@ To build PIblox_Setup.exe, install Inno Setup 6 and run:
 
     .\scripts\build-installer.ps1
 
-GitHub Actions builds both the installer and portable ZIP on pushes to main, pull requests, or manual runs. A version tag such as v1.0.1 also publishes the generated files as a GitHub Release.
+GitHub Actions builds the installer and portable ZIP on pushes to main, pull requests, or manual runs. Every push to main automatically publishes a numbered GitHub Release with `PIblox_Setup.exe` and the portable ZIP. A version tag such as v1.0.1 also publishes the generated files as a release. Download installers from [Releases](https://github.com/padi228/PIblox1.0/releases).
 
 ## PI Call setup
 
