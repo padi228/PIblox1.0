@@ -7,7 +7,7 @@ interface Env {
 const ROOM_CODE_PATTERN = /^[A-Z2-9]{8}$/;
 const ALLOWED_ORIGIN = "https://piblox.local";
 const MAX_SIGNAL_BYTES = 48 * 1024;
-const ALLOWED_SIGNAL_TYPES = new Set(["offer", "answer", "candidate", "hangup"]);
+const ALLOWED_SIGNAL_TYPES = new Set(["offer", "answer", "candidate", "hangup", "hello"]);
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -84,7 +84,16 @@ export class CallRoom extends DurableObject<Env> {
       return;
     }
 
-    const relayMessage = JSON.stringify({ type: payload.type, data: payload.data ?? null });
+    if (payload.type === "hello") {
+      const name = (payload.data as { name?: unknown }).name;
+      if (typeof name !== "string" || name.length < 1 || name.length > 24) {
+        ws.close(1008, "Invalid display name");
+        return;
+      }
+    }
+
+    const relayType = payload.type === "hello" ? "peer-hello" : payload.type;
+    const relayMessage = JSON.stringify({ type: relayType, data: payload.data ?? null });
     for (const otherPeer of this.ctx.getWebSockets("call")) {
       if (otherPeer !== ws) {
         try {
