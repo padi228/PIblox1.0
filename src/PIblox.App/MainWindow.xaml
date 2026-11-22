@@ -87,6 +87,7 @@
                     <Button x:Name="DiscoverNavButton" Content="⌕   Поиск игр" Click="DiscoverNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="PerformanceNavButton" Content="▥   Производительность" Click="PerformanceNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="CallNavButton" Content="◉   PI Call" Click="CallNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
+                    <Button x:Name="NetworkNavButton" Content="◇   PIblox Network" Click="NetworkNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="SettingsNavButton" Content="⚙   Настройки" Click="SettingsNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="DiagnosticsNavButton" Content="☷   Диагностика" Click="DiagnosticsNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Border Height="1" Background="#303858" Margin="4,18,4,16"/>

@@ -32,6 +32,10 @@ To build PIblox_Setup.exe, install Inno Setup 6 and run:
 
 GitHub Actions builds the installer and portable ZIP on pushes to main, pull requests, or manual runs. Every push to main automatically publishes a numbered GitHub Release with `PIblox_Setup.exe` and the portable ZIP. A version tag such as v1.0.1 also publishes the generated files as a release. Download installers from [Releases](https://github.com/padi228/PIblox1.0/releases).
 
+## PIblox Network foundation
+
+The preview includes a separate PIblox Network window. It detects the official WireGuard for Windows client and checks local adapter state. The first milestone is diagnostics-only: it does not create a VPN tunnel, change Windows routes or DNS, install drivers, or collect browsing/network activity. A real tunnel still requires a trusted server profile and a later, explicitly confirmed connection workflow. See [docs/PIBLOX_NETWORK.md](docs/PIBLOX_NETWORK.md).
+
 ## PI Call setup
 
 PI Call is an audio-only WebRTC client. The media stream is peer-to-peer; the signaling Worker relays only room and WebRTC negotiation messages. The Worker source uses one Durable Object per room, limits rooms to two connected peers, and does not save audio or chat messages.

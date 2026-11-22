@@ -15,6 +15,7 @@
             <Setter Property="BorderBrush" Value="#5B5690"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="17,12"/>
+            <Setter Property="MinHeight" Value="38"/>
             <Setter Property="Margin" Value="0,3"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -49,6 +50,9 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="13,11"/>
             <Setter Property="FontSize" Value="13"/>
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True"><Setter Property="BorderBrush" Value="#A78BFA"/><Setter Property="BorderThickness" Value="2"/></Trigger>
+            </Style.Triggers>
         </Style>
         <Style TargetType="{x:Type ListBox}">
             <Setter Property="Background" Value="#101529"/>
@@ -56,6 +60,25 @@
             <Setter Property="BorderBrush" Value="#273451"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="6"/>
+        </Style>
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Foreground" Value="#F6F7FF"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#27254A"/></Trigger>
+                            <Trigger Property="IsSelected" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#49377D"/><Setter Property="Foreground" Value="White"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style TargetType="{x:Type CheckBox}">
             <Setter Property="Foreground" Value="#E7E9F7"/>
