@@ -1,4 +1,8 @@
-## 1.0.2-preview — PI Call branding
+## 1.0.3-preview — Roblox account shortcut
+- Added a home-screen Roblox login shortcut opening the official login page in the browser. PIblox does not collect or store passwords.
+- Desktop shortcut creation is enabled by default in the installer.
+
+## 1.0.3-preview — Roblox account shortcut\n- Added a dedicated home-screen Roblox sign-in shortcut that opens the official login page in the browser. PIblox does not collect or store passwords.\n- Desktop shortcut task is selected by default during installation.\n\n## 1.0.2-preview — PI Call branding
 - Renamed the embedded calling module from PADI Call to PI Call throughout the app and documentation.
 - Renamed the signaling Worker package and source directory to `pi-call-signaling`.
 - Migrated saved signaling-server and display-name settings to the new `piCall` keys while preserving existing values.
