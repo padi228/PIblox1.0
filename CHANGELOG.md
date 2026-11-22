@@ -1,5 +1,11 @@
 # Changelog
 
+## PIblox Network foundation (feature branch)
+- Added a separate PIblox Network window to the existing WPF app.
+- Added local detection of the official WireGuard for Windows executable and WireGuard network adapters.
+- Added local diagnostics and shortcuts to the installed client / official installation page.
+- This is a foundation preview only: it does not create a VPN tunnel, install drivers, or modify Windows routes and DNS.
+
 ## 1.0.5-preview / Build 85 — visual refresh
 - Updated the PIblox home screen branding and simplified labels for search, account sign-in and Player/Studio cards.
 - Polished shared button/control styling.
