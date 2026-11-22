@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="AccentBrush" Color="#A56BFF"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#9A78FF"/>
         <SolidColorBrush x:Key="AccentBlueBrush" Color="#4BD4FF"/>
         <SolidColorBrush x:Key="WindowBrush" Color="#060815"/>
         <SolidColorBrush x:Key="PanelBrush" Color="#14172B"/>
@@ -11,10 +11,10 @@
         <SolidColorBrush x:Key="MutedBrush" Color="#929BB9"/>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Foreground" Value="#F6F7FF"/>
-            <Setter Property="Background" Value="#262445"/>
-            <Setter Property="BorderBrush" Value="#625A91"/>
+            <Setter Property="Background" Value="#282548"/>
+            <Setter Property="BorderBrush" Value="#5B5690"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="Padding" Value="17,12"/>
             <Setter Property="Margin" Value="0,3"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
