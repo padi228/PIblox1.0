@@ -1,34 +1,42 @@
-using Microsoft.Win32;
 using System.IO;
 
 namespace PIblox.App.Services;
 
 public sealed class RobloxLocator
 {
+    private readonly string _versionsDirectory = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Roblox", "Versions");
+
     public string? FindPlayer() => FindExecutable("RobloxPlayerBeta.exe", "RobloxPlayerLauncher.exe");
     public string? FindStudio() => FindExecutable("RobloxStudioBeta.exe");
 
-    private static string? FindExecutable(params string[] executableNames)
+    private string? FindExecutable(params string[] executableNames)
     {
-        var roots = new List<string>();
-        var local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        roots.Add(Path.Combine(local, "Roblox", "Versions"));
-        roots.Add(Path.Combine(local, "Programs", "Roblox"));
+        if (!Directory.Exists(_versionsDirectory))
+            return null;
 
-        foreach (var root in roots.Where(Directory.Exists))
+        IEnumerable<string> versionDirectories;
+        try
+        {
+            versionDirectories = Directory.EnumerateDirectories(_versionsDirectory)
+                .OrderByDescending(Directory.GetLastWriteTimeUtc)
+                .ToArray();
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+
+        foreach (var directory in versionDirectories)
         {
             foreach (var name in executableNames)
             {
-                try
-                {
-                    var hit = Directory.GetFiles(root, name, SearchOption.AllDirectories)
-                        .FirstOrDefault(p => File.Exists(p));
-                    if (hit is not null) return hit;
-                }
-                catch (UnauthorizedAccessException) { }
-                catch (IOException) { }
+                var candidate = Path.Combine(directory, name);
+                if (File.Exists(candidate))
+                    return candidate;
             }
         }
+
         return null;
     }
 }
