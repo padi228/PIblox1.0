@@ -6,6 +6,7 @@ PIblox is a Windows desktop launcher scaffold for Roblox Player and Roblox Studi
 
 - Provides a home-screen shortcut to the official Roblox login page; credentials remain in the browser.
 - Detects common local Roblox Player and Studio installation folders.
+- Includes a read-only Roblox Studio MCP connector page to list open Studio sessions and inspect Studio state through Roblox's official local MCP server.
 - Provides Player and Studio launch buttons (using Roblox URI handlers with a local executable fallback).
 - Opens the official Roblox experience search for a game name, numeric place ID, or HTTPS roblox.com link.
 - Stores favorites and recent links locally.
@@ -54,6 +55,10 @@ This is an actively developed preview. The PI Call client and signaling Worker s
 
 PIblox only opens HTTPS links on roblox.com from its in-app game-link field. It does not ask for Roblox passwords or session cookies. Never add credentials, tokens, private data, or .env files to this public repository.
 
+
+## Roblox Studio MCP connection
+
+See docs/PIBLOX_STUDIO_MCP.md for setup. Enable Assistant → Manage MCP Servers → Enable Studio as MCP server in Roblox Studio, then open Roblox Studio Link in PIblox. This preview only lists Studio windows and reads Studio state; it does not edit scripts, execute Luau, upload assets, or publish a place.
 
 ## Roblox account connection (OAuth)
 

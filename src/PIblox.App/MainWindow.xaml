@@ -86,6 +86,7 @@
                     <Button x:Name="HomeNavButton" Content="⌂   Главная" Click="HomeNav_Click" HorizontalContentAlignment="Left" Background="#4B347E" BorderBrush="#A78BFA" Margin="0,0,0,5"/>
                     <Button x:Name="DiscoverNavButton" Content="⌕   Поиск игр" Click="DiscoverNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="PerformanceNavButton" Content="▥   Производительность" Click="PerformanceNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
+                    <Button x:Name="StudioMcpNavButton" Content="▣   Roblox Studio Link" Click="StudioMcpNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="CallNavButton" Content="◉   PI Call" Click="CallNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="SettingsNavButton" Content="⚙   Настройки" Click="SettingsNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
                     <Button x:Name="DiagnosticsNavButton" Content="☷   Диагностика" Click="DiagnosticsNav_Click" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent" Margin="0,0,0,5"/>
@@ -284,6 +285,45 @@
                         </StackPanel>
                     </Border>
                 </StackPanel>
+            </Grid>
+
+            <Grid x:Name="StudioMcpPage" Visibility="Collapsed">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Подключение к Roblox Studio" FontSize="25" FontWeight="Bold"/>
+                        <TextBlock Text="Официальный локальный MCP-сервер Roblox Studio. PIblox Preview использует только чтение списка окон и состояния Studio." Foreground="#929BB9" Margin="0,6,0,16" TextWrapping="Wrap"/>
+                        <Border Background="#211C43" BorderBrush="#665BA6" BorderThickness="1" CornerRadius="18" Padding="20" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Как включить соединение" FontSize="17" FontWeight="SemiBold"/>
+                                <TextBlock Text="1. Установи и открой актуальную Roblox Studio." Foreground="#D4D8F1" Margin="0,8,0,0"/>
+                                <TextBlock Text="2. Открой Assistant → Manage MCP Servers." Foreground="#D4D8F1" Margin="0,4,0,0"/>
+                                <TextBlock Text="3. Включи Enable Studio as MCP server." Foreground="#D4D8F1" Margin="0,4,0,0"/>
+                                <TextBlock Text="4. Вернись в PIblox и нажми «Подключить»." Foreground="#D4D8F1" Margin="0,4,0,0"/>
+                                <TextBlock Text="PIblox запускает локальный официальный connector из %LOCALAPPDATA%\Roblox\mcp.bat. Никакие пароли, cookies или API-ключи Roblox не нужны." Foreground="#AFA6FF" FontSize="11" TextWrapping="Wrap" Margin="0,12,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <WrapPanel Margin="0,0,0,10">
+                            <Button x:Name="ConnectStudioMcpButton" Content="Подключить Roblox Studio" Click="ConnectStudioMcp_Click" Background="#7768E8" BorderBrush="#8E82FF"/>
+                            <Button x:Name="RefreshStudioListButton" Content="Обновить список" Click="RefreshStudioList_Click" IsEnabled="False" Margin="8,3,0,3"/>
+                            <Button x:Name="DisconnectStudioMcpButton" Content="Отключить" Click="DisconnectStudioMcp_Click" IsEnabled="False" Margin="8,3,0,3"/>
+                        </WrapPanel>
+                        <TextBlock x:Name="StudioMcpStatusText" Text="Ожидает подключения" Foreground="#AFA6FF" Margin="0,0,0,12"/>
+                        <Border Background="#151A2D" CornerRadius="16" Padding="18" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Состояние конкретного окна Studio" FontSize="16" FontWeight="SemiBold"/>
+                                <TextBlock Text="Вставь Studio ID из результата списка открытых окон." Foreground="#929BB9" FontSize="11" Margin="0,5,0,10"/>
+                                <TextBox x:Name="StudioIdBox" ToolTip="Studio ID" Margin="0,0,0,8"/>
+                                <Button x:Name="GetStudioStateButton" Content="Прочитать состояние Studio" Click="GetStudioState_Click" IsEnabled="False" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </Border>
+                        <TextBlock Text="Результат соединения" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <TextBox x:Name="StudioMcpOutputBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                 MinHeight="220" MaxHeight="420" Background="#0C1024" FontFamily="Consolas" FontSize="12"
+                                 Padding="12" Text="Пока не подключено."/>
+                        <TextBlock Text="В этой версии PIblox не запускает Luau-код, не редактирует скрипты, не загружает ассеты и не публикует игру. Доступные команды ограничены просмотром подключённых Studio и чтением состояния выбранного окна." Foreground="#929BB9" FontSize="11" TextWrapping="Wrap" Margin="0,12,0,6"/>
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
 
             <Grid x:Name="DiagnosticsPage" Visibility="Collapsed">

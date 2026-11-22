@@ -19,6 +19,7 @@ public partial class MainWindow : Window
     private readonly SystemMetricsService _metricsService = new();
     private readonly UpdateService _updateService = new();
     private readonly RobloxOAuthService _robloxOAuthService = new();
+    private readonly RobloxStudioMcpClient _studioMcpClient = new();
     private readonly DispatcherTimer _metricsTimer;
     private AppSettings _settings;
     private CallWindow? _callWindow;
@@ -45,7 +46,11 @@ public partial class MainWindow : Window
             if (_settings.CheckUpdatesOnStartup)
                 await CheckUpdatesAsync(showDialog: false);
         };
-        Closed += (_, _) => _metricsTimer.Stop();
+        Closed += async (_, _) =>
+        {
+            _metricsTimer.Stop();
+            await _studioMcpClient.DisposeAsync();
+        };
     }
 
     private void LoadSettingsIntoUi()
@@ -87,6 +92,7 @@ public partial class MainWindow : Window
         HomePage.Visibility = Visibility.Collapsed;
         DiscoverPage.Visibility = Visibility.Collapsed;
         PerformancePage.Visibility = Visibility.Collapsed;
+        StudioMcpPage.Visibility = Visibility.Collapsed;
         SettingsPage.Visibility = Visibility.Collapsed;
         DiagnosticsPage.Visibility = Visibility.Collapsed;
 
@@ -94,7 +100,7 @@ public partial class MainWindow : Window
         PageTitle.Text = title;
         PageDescription.Text = description;
 
-        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, SettingsNavButton, DiagnosticsNavButton })
+        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, StudioMcpNavButton, CallNavButton, SettingsNavButton, DiagnosticsNavButton })
         {
             button.Background = Brushes.Transparent;
             button.BorderBrush = Brushes.Transparent;
@@ -113,9 +119,12 @@ public partial class MainWindow : Window
     private void PerformanceNav_Click(object sender, RoutedEventArgs e) =>
         ShowPage(PerformancePage, PerformanceNavButton, "Производительность", "Локальные показатели Windows без рискованных системных твиков");
 
+    private void StudioMcpNav_Click(object sender, RoutedEventArgs e) =>
+        ShowPage(StudioMcpPage, StudioMcpNavButton, "Roblox Studio Link", "Локальное read-only подключение к официальному MCP-серверу Roblox Studio");
+
     private void CallNav_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, CallNavButton, SettingsNavButton, DiagnosticsNavButton })
+        foreach (var button in new[] { HomeNavButton, DiscoverNavButton, PerformanceNavButton, StudioMcpNavButton, CallNavButton, SettingsNavButton, DiagnosticsNavButton })
         {
             button.Background = Brushes.Transparent;
             button.BorderBrush = Brushes.Transparent;
@@ -167,6 +176,97 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(ex.Message, "PIblox", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+    }
+
+    private async void ConnectStudioMcp_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_studioMcpClient.IsConnected)
+        {
+            var consent = MessageBox.Show(
+                "PIblox запустит встроенный локальный MCP-сервер Roblox Studio.\n\n" +
+                "В этой версии PIblox использует только просмотр открытых окон Studio и чтение их состояния. " +
+                "Он не редактирует скрипты, не запускает произвольный код, не загружает ассеты и не публикует игру.\n\n" +
+                "Продолжить?",
+                "Подключение Roblox Studio",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Information);
+            if (consent != MessageBoxResult.Yes)
+                return;
+        }
+
+        ConnectStudioMcpButton.IsEnabled = false;
+        StudioMcpStatusText.Text = "Запускаем официальный connector…";
+        StatusText.Text = "Подключение Roblox Studio…";
+
+        try
+        {
+            var output = await _studioMcpClient.ConnectAndListStudiosAsync();
+            StudioMcpOutputBox.Text = output;
+            StudioMcpStatusText.Text = "MCP подключён · используется read-only режим";
+            RefreshStudioListButton.IsEnabled = true;
+            GetStudioStateButton.IsEnabled = true;
+            DisconnectStudioMcpButton.IsEnabled = true;
+            StatusText.Text = "Roblox Studio подключена";
+        }
+        catch (Exception ex)
+        {
+            StudioMcpStatusText.Text = "Не удалось подключиться к Roblox Studio";
+            StudioMcpOutputBox.Text = ex.Message;
+            StatusText.Text = "Ошибка Studio MCP";
+        }
+        finally
+        {
+            ConnectStudioMcpButton.IsEnabled = true;
+        }
+    }
+
+    private async void RefreshStudioList_Click(object sender, RoutedEventArgs e)
+    {
+        RefreshStudioListButton.IsEnabled = false;
+        try
+        {
+            StudioMcpOutputBox.Text = await _studioMcpClient.ListStudiosAsync();
+            StudioMcpStatusText.Text = "Список открытых окон Studio обновлён";
+        }
+        catch (Exception ex)
+        {
+            StudioMcpStatusText.Text = "Не удалось обновить список Studio";
+            StudioMcpOutputBox.Text = ex.Message;
+        }
+        finally
+        {
+            RefreshStudioListButton.IsEnabled = _studioMcpClient.IsConnected;
+        }
+    }
+
+    private async void GetStudioState_Click(object sender, RoutedEventArgs e)
+    {
+        GetStudioStateButton.IsEnabled = false;
+        try
+        {
+            StudioMcpOutputBox.Text = await _studioMcpClient.GetStudioStateAsync(StudioIdBox.Text);
+            StudioMcpStatusText.Text = "Состояние выбранного окна Studio получено";
+        }
+        catch (Exception ex)
+        {
+            StudioMcpStatusText.Text = "Не удалось получить состояние Studio";
+            StudioMcpOutputBox.Text = ex.Message;
+        }
+        finally
+        {
+            GetStudioStateButton.IsEnabled = _studioMcpClient.IsConnected;
+        }
+    }
+
+    private async void DisconnectStudioMcp_Click(object sender, RoutedEventArgs e)
+    {
+        await _studioMcpClient.DisconnectAsync();
+        RefreshStudioListButton.IsEnabled = false;
+        GetStudioStateButton.IsEnabled = false;
+        DisconnectStudioMcpButton.IsEnabled = false;
+        StudioMcpStatusText.Text = "Roblox Studio MCP отключён";
+        StudioMcpOutputBox.Text = "Соединение закрыто. Открытые проекты Studio не изменены.";
+        StatusText.Text = "Studio отключена";
     }
 
     private void SearchBox_KeyDown(object sender, KeyEventArgs e)

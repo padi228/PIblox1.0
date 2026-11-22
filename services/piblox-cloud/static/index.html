@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PIblox Cloud · Прототип</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0a0d1d; --panel:#131a31; --line:#29345d; --text:#eef0ff; --muted:#a4accd; --accent:#8b7cff; --blue:#53b5ff; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:radial-gradient(1000px 600px at 15% -10%,#28205b 0%,transparent 60%),var(--bg); color:var(--text); font:15px/1.5 "Segoe UI",system-ui,sans-serif; }
+    main { width:min(1120px,calc(100% - 32px)); margin:34px auto; }
+    header { display:flex; justify-content:space-between; align-items:center; gap:18px; margin-bottom:22px; }
+    .brand { display:flex; align-items:center; gap:13px; }
+    .mark { display:grid; place-items:center; width:46px; height:46px; border:1px solid #7669dd; border-radius:15px; background:linear-gradient(145deg,#443b9a,#1c376a); font-weight:800; font-size:20px; }
+    h1 { margin:0; font-size:22px; letter-spacing:.2px; } .sub { color:var(--muted); font-size:13px; }
+    .pill { border:1px solid var(--line); border-radius:999px; padding:7px 12px; color:#c9c7ff; background:#161c38; font-size:12px; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) 260px; gap:18px; }
+    .panel { border:1px solid var(--line); background:linear-gradient(160deg,rgba(25,33,64,.96),rgba(15,20,41,.98)); border-radius:20px; padding:17px; box-shadow:0 18px 50px #0004; }
+    .screen-wrap { padding:10px; border-radius:16px; background:#070a16; border:1px solid #323b67; }
+    #screen { display:block; width:100%; min-height:240px; aspect-ratio:16/9; object-fit:contain; border-radius:10px; background:#0d1020; }
+    .screen-placeholder { display:grid; place-items:center; text-align:center; min-height:240px; aspect-ratio:16/9; color:var(--muted); }
+    .controls { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:15px; }
+    button { border:1px solid #6259b4; border-radius:12px; padding:10px 15px; color:white; background:linear-gradient(135deg,#6558c8,#454a9c); font-weight:650; cursor:pointer; }
+    button.secondary { border-color:#3a456f; background:#202946; } button:disabled { opacity:.45; cursor:not-allowed; }
+    .metric { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #293253; color:var(--muted); }
+    .metric strong { color:var(--text); font-weight:650; }
+    .hint { color:var(--muted); font-size:13px; margin:13px 2px 0; }
+    .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#7d849d; margin-right:7px; }
+    .dot.live { background:#58dda5; box-shadow:0 0 12px #58dda5aa; }
+    .status { color:var(--muted); font-size:13px; }
+    .touch { display:none; grid-template-columns:repeat(3,42px); gap:6px; margin-top:12px; }
+    .touch button { padding:8px 0; touch-action:none; }
+    @media(max-width:800px) { .layout{grid-template-columns:1fr;} header{align-items:flex-start;} .pill{display:none;} }
+    @media(max-width:520px) { main{width:calc(100% - 18px);margin:18px auto;} .panel{padding:11px;} .touch{display:grid;} h1{font-size:19px;} }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">
+      <div class="mark">P</div>
+      <div><h1>PIblox Cloud</h1><div class="sub">Облачный игровой стриминг · локальный прототип</div></div>
+    </div>
+    <div class="pill">СОБСТВЕННАЯ ТЕСТОВАЯ СЦЕНА · БЕЗ СТОРОННИХ ИГР</div>
+  </header>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="screen-wrap">
+        <div id="placeholder" class="screen-placeholder">Создайте тестовую сессию, чтобы запустить сцену, которую отрисовывает сервер.</div>
+        <img id="screen" alt="Live server-rendered PIblox Cloud test scene" hidden>
+      </div>
+      <div class="controls">
+        <button id="start">Запустить тестовую сессию</button>
+        <button id="stop" class="secondary" disabled>Остановить сессию</button>
+        <span class="status" id="connection"><span class="dot"></span>Нет подключения</span>
+      </div>
+      <div class="touch" aria-label="Сенсорное управление">
+        <span></span><button data-key="ArrowUp">↑</button><span></span>
+        <button data-key="ArrowLeft">←</button><button data-key="ArrowDown">↓</button><button data-key="ArrowRight">→</button>
+      </div>
+      <p class="hint">Используйте стрелки или WASD, чтобы двигать синий маркер. Сервер создаёт кадры и передаёт их через MJPEG, а управление возвращается по WebSocket.</p>
+    </section>
+
+    <aside class="panel">
+      <h2 style="font-size:16px;margin:2px 0 10px">Монитор сессии</h2>
+      <div class="metric"><span>Сервис</span><strong id="service">Проверка…</strong></div>
+      <div class="metric"><span>Подключение</span><strong id="state">Остановлено</strong></div>
+      <div class="metric"><span>Задержка ответа</span><strong id="latency">—</strong></div>
+      <div class="metric"><span>Видеопоток</span><strong>MJPEG · 15 FPS target</strong></div>
+      <div class="metric"><span>Сессии</span><strong id="sessions">0 / 2</strong></div>
+      <p class="hint">По умолчанию эта версия работает на том же компьютере. Это ещё не размещённый в интернете облачный сервис; не открывайте к нему публичный доступ.</p>
+    </aside>
+  </div>
+</main>
+<script>
+(() => {
+  const screen = document.getElementById("screen");
+  const placeholder = document.getElementById("placeholder");
+  const startButton = document.getElementById("start");
+  const stopButton = document.getElementById("stop");
+  const connection = document.getElementById("connection");
+  const state = document.getElementById("state");
+  const latency = document.getElementById("latency");
+  const service = document.getElementById("service");
+  const sessions = document.getElementById("sessions");
+  const held = new Set();
+  let sessionId = null;
+  let socket = null;
+  let pingTimer = null;
+
+  function setПодключение(text, live) {
+    connection.innerHTML = '<span class="dot ' + (live ? "live" : "") + '"></span>' + text;
+    state.textContent = live ? "Connected" : "Остановлено";
+  }
+
+  async function refreshHealth() {
+    try {
+      const response = await fetch("/api/health");
+      if (!response.ok) throw new Error("health request failed");
+      const data = await response.json();
+      service.textContent = data.ok ? "В сети" : "Недоступен";
+      sessions.textContent = data.active_sessions + " / 2";
+    } catch (_) {
+      service.textContent = "Недоступен";
+    }
+  }
+
+  function sendKeys() {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "keys", keys: Array.from(held) }));
+    }
+  }
+
+  function mapKey(key) {
+    if (key === "w" || key === "W") return "ArrowUp";
+    if (key === "a" || key === "A") return "ArrowLeft";
+    if (key === "s" || key === "S") return "ArrowDown";
+    if (key === "d" || key === "D") return "ArrowRight";
+    return key;
+  }
+
+  window.addEventListener("keydown", event => {
+    const key = mapKey(event.key);
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)) {
+      event.preventDefault();
+      held.add(key);
+      sendKeys();
+    }
+  });
+  window.addEventListener("keyup", event => {
+    const key = mapKey(event.key);
+    if (held.delete(key)) sendKeys();
+  });
+  window.addEventListener("blur", () => { held.clear(); sendKeys(); });
+
+  document.querySelectorAll("[data-key]").forEach(button => {
+    const key = button.dataset.key;
+    button.addEventListener("pointerdown", event => {
+      event.preventDefault();
+      held.add(key);
+      sendKeys();
+    });
+    for (const name of ["pointerup", "pointercancel", "pointerleave"]) {
+      button.addEventListener(name, () => { held.delete(key); sendKeys(); });
+    }
+  });
+
+  async function stopSession() {
+    clearInterval(pingTimer);
+    pingTimer = null;
+    held.clear();
+    if (socket) {
+      socket.close();
+      socket = null;
+    }
+    if (sessionId) {
+      const id = sessionId;
+      sessionId = null;
+      try { await fetch("/api/sessions/" + encodeURIComponent(id), { method: "DELETE" }); } catch (_) {}
+    }
+    screen.removeAttribute("src");
+    screen.hidden = true;
+    placeholder.hidden = false;
+    startButton.disabled = false;
+    stopButton.disabled = true;
+    latency.textContent = "—";
+    setПодключение("Нет подключения", false);
+    await refreshHealth();
+  }
+
+  startButton.addEventListener("click", async () => {
+    startButton.disabled = true;
+    setПодключение("Создаём сессию…", false);
+    try {
+      const response = await fetch("/api/sessions", { method: "POST" });
+      if (!response.ok) throw new Error(await response.text());
+      const data = await response.json();
+      sessionId = data.session_id;
+
+      placeholder.hidden = true;
+      screen.hidden = false;
+      screen.src = "/api/sessions/" + encodeURIComponent(sessionId) + "/stream?start=" + Date.now();
+
+      const wsProtocol = location.protocol === "https:" ? "wss:" : "ws:";
+      socket = new WebSocket(wsProtocol + "//" + location.host + "/ws/sessions/" + encodeURIComponent(sessionId));
+      socket.onopen = () => {
+        setПодключение("Видеопоток подключён", true);
+        stopButton.disabled = false;
+        pingTimer = setInterval(() => {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ type: "ping", sent_at: performance.now() }));
+          }
+        }, 2000);
+        sendKeys();
+      };
+      socket.onmessage = event => {
+        const data = JSON.parse(event.data);
+        if (data.type === "pong" && typeof data.sent_at === "number") {
+          latency.textContent = Math.max(0, Math.round(performance.now() - data.sent_at)) + " ms";
+        }
+      };
+      socket.onerror = () => setПодключение("Ошибка канала управления", false);
+      socket.onclose = () => {
+        if (sessionId) setПодключение("Канал управления закрыт", false);
+      };
+      screen.onerror = () => setПодключение("Видеопоток недоступен", false);
+      await refreshHealth();
+    } catch (error) {
+      alert("Не удалось запустить тестовую сессию: " + error.message);
+      await stopSession();
+    }
+  });
+
+  stopButton.addEventListener("click", stopSession);
+  refreshHealth();
+  setInterval(refreshHealth, 5000);
+})();
+</script>
+</body>
+</html>
