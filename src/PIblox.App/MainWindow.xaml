@@ -115,6 +115,7 @@
                             <StackPanel>
                                 <DockPanel>
                                     <TextBlock Text="Избранное" FontSize="16" FontWeight="SemiBold"/>
+                                    <Button DockPanel.Dock="Right" Content="Удалить" Click="RemoveFavorite_Click" Padding="9,5" Margin="6,0,0,0" FontSize="11"/>
                                     <Button DockPanel.Dock="Right" Content="＋ Добавить" Click="AddFavorite_Click" Padding="9,5" Margin="0" FontSize="11"/>
                                 </DockPanel>
                                 <ListBox x:Name="FavoritesList" Height="130" Margin="0,10,0,0" DisplayMemberPath="Name" MouseDoubleClick="FavoritesList_MouseDoubleClick"/>
@@ -123,7 +124,10 @@
                         </Border>
                         <Border Background="#151A2D" CornerRadius="16" Padding="16">
                             <StackPanel>
-                                <TextBlock Text="Недавние" FontSize="16" FontWeight="SemiBold"/>
+                                <DockPanel>
+                                    <TextBlock Text="Недавние" FontSize="16" FontWeight="SemiBold"/>
+                                    <Button DockPanel.Dock="Right" Content="Очистить" Click="ClearHistory_Click" Padding="9,5" Margin="0" FontSize="11"/>
+                                </DockPanel>
                                 <ListBox x:Name="HistoryList" Height="130" Margin="0,10,0,0" DisplayMemberPath="Name" MouseDoubleClick="HistoryList_MouseDoubleClick"/>
                             </StackPanel>
                         </Border>
@@ -203,6 +207,8 @@
                                 <Button Content="Сохранить настройки" Click="SaveSettings_Click" Background="#7768E8" BorderBrush="#8E82FF"/>
                                 <Button Content="Проверить обновления" Click="CheckUpdates_Click" Margin="8,3,0,3"/>
                                 <Button Content="Открыть папку настроек" Click="OpenSettingsFolder_Click" Margin="8,3,0,3"/>
+                                <Button Content="Экспорт настроек" Click="ExportSettings_Click" Margin="8,3,0,3"/>
+                                <Button Content="Импорт настроек" Click="ImportSettings_Click" Margin="8,3,0,3"/>
                             </WrapPanel>
                         </StackPanel>
                     </Border>
