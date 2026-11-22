@@ -121,7 +121,8 @@ def main() -> int:
                             && video.readyState >= 2
                             && video.videoWidth > 0
                             && video.videoHeight > 0
-                            && decoded > 0;
+                            && decoded > 0
+                            && /^\\d+ ms$/.test(document.querySelector('#first-frame').textContent);
                     }""",
                     timeout=30000,
                     polling=250,
@@ -133,7 +134,9 @@ def main() -> int:
                         width: document.querySelector('#video').videoWidth,
                         height: document.querySelector('#video').videoHeight,
                         decodedFrames: document.querySelector('#frames').textContent,
-                        fps: document.querySelector('#fps').textContent
+                        fps: document.querySelector('#fps').textContent,
+                        rtt: document.querySelector('#rtt').textContent,
+                        firstFrameMs: document.querySelector('#first-frame').textContent
                     })"""
                 )
                 print("BROWSER_STREAM_OK " + json.dumps(metrics, ensure_ascii=False))
