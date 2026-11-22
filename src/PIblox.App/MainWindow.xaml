@@ -49,11 +49,11 @@
             </Border.Background>
             <DockPanel LastChildFill="True">
                 <StackPanel DockPanel.Dock="Top" Margin="4,8,4,18">
-                    <TextBlock Text="PIblox" FontSize="28" FontWeight="Bold" Foreground="#C4B5FD"/>
+                    <Border Width="44" Height="44" CornerRadius="14" Background="#7757E9" Margin="0,0,0,10"><TextBlock Text="P" FontSize="25" FontWeight="Black" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="PIblox" FontSize="27" FontWeight="Bold" Foreground="#F4F5FF"/>
                     <TextBlock Text="YOUR ROBLOX HUB" FontSize="10" FontWeight="Bold" Foreground="#8E9BCE" Margin="2,2,0,0"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Margin="4,20,4,4">
-                    <TextBlock Text="PIblox · Preview" Foreground="#707B9F" FontSize="11"/>
+                    <TextBlock Text="PIblox · 1.0" Foreground="#707B9F" FontSize="11"/>
                     <TextBlock Text="Локальный режим" Foreground="#707B9F" FontSize="11" Margin="0,3,0,0"/>
                 </StackPanel>
                 <StackPanel>
@@ -91,11 +91,11 @@
                     <Grid>
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <StackPanel>
-                            <TextBlock Text="Подключение Roblox" FontSize="18" FontWeight="SemiBold"/>
-                            <TextBlock x:Name="AccountConnectionStatus" Text="Войти через официальный сайт Roblox" Foreground="#929BB9" FontSize="12" Margin="0,5,0,0"/>
+                            <TextBlock Text="Аккаунт Roblox" FontSize="18" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="AccountConnectionStatus" Text="Вход через сайт — пока без OAuth-подключения к PIblox" Foreground="#929BB9" FontSize="12" Margin="0,5,0,0"/>
                             <TextBlock Text="PIblox не получает и не сохраняет пароль или cookies." Foreground="#7884A8" FontSize="11" Margin="0,4,0,0"/>
                         </StackPanel>
-                        <Button Grid.Column="1" Content="Войти ↗" Click="ConnectRoblox_Click" Background="#8B5CF6" BorderBrush="#A78BFA" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                        <Button Grid.Column="1" Content="Войти на Roblox ↗" Click="ConnectRoblox_Click" Background="#8B5CF6" BorderBrush="#A78BFA" VerticalAlignment="Center" Margin="14,0,0,0"/>
                     </Grid>
                 </Border>
                 <Border Grid.Row="1" CornerRadius="24" Padding="26" Margin="0,0,0,14" BorderBrush="#514B90" BorderThickness="1">
@@ -108,8 +108,8 @@
                     <Grid>
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Твой Roblox — в одном месте ✦" FontSize="25" FontWeight="Bold" Foreground="#F4F0FF"/>
-                            <TextBlock Text="Запускай Roblox и Studio, сохраняй любимые игры и следи за системой." Foreground="#D0D5F4" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                            <TextBlock Text="ТВОЯ ИГРОВАЯ ПЛАТФОРМА" FontSize="26" FontWeight="Bold" Foreground="#F4F0FF"/>
+                            <TextBlock Text="Запускай Roblox и Studio одним нажатием. Поиск, избранное и настройки — без лишних экранов." Foreground="#D0D5F4" Margin="0,6,0,0" TextWrapping="Wrap"/>
                         </StackPanel>
                         <TextBlock Grid.Column="1" Text="✦" FontSize="68" FontWeight="Black" Foreground="#A89BFF" VerticalAlignment="Center" Margin="24,0,14,0"/>
                     </Grid>
@@ -119,29 +119,29 @@
                     <StackPanel Grid.Column="0" Margin="0,0,12,0">
                         <Border Background="#19172F" CornerRadius="18" Padding="18" Margin="0,0,0,12">
                             <StackPanel>
-                                <TextBlock Text="Быстрый поиск Roblox" FontSize="17" FontWeight="SemiBold"/>
-                                <TextBlock Text="Введи название игры, ID или ссылку Roblox." Foreground="#929BB9" FontSize="12" Margin="0,4,0,12"/>
+                                <TextBlock Text="Открыть игру" FontSize="17" FontWeight="SemiBold"/>
+                                <TextBlock Text="Название, ID или ссылка Roblox." Foreground="#929BB9" FontSize="12" Margin="0,4,0,12"/>
                                 <DockPanel>
                                     <Button DockPanel.Dock="Right" Content="Найти" Click="HomeSearch_Click" Background="#8B5CF6" BorderBrush="#A78BFA" Margin="8,0,0,0"/>
                                     <TextBox x:Name="HomeSearchBox" ToolTip="Название, ID или ссылка" KeyDown="SearchBox_KeyDown"/>
                                 </DockPanel>
-                                <TextBlock Text="Поиск открывается на официальном сайте roblox.com." Foreground="#7884A8" FontSize="11" Margin="0,8,0,0"/>
+                                <TextBlock Text="Результаты открываются на официальном Roblox." Foreground="#7884A8" FontSize="11" Margin="0,8,0,0"/>
                             </StackPanel>
                         </Border>
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <Border Grid.Column="0" Background="#19182F" CornerRadius="18" Padding="17" Margin="0,0,6,0">
                                 <StackPanel>
-                                    <TextBlock Text="ROBLOX PLAYER" Foreground="#8D95B7" FontSize="10" FontWeight="Bold"/>
-                                    <TextBlock Text="Играть" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,3"/>
+                                    <TextBlock Text="PLAYER" Foreground="#8D95B7" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="Roblox" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,3"/>
                                     <TextBlock x:Name="PlayerStatus" Text="Поиск установки…" Foreground="#929BB9" FontSize="11" Margin="0,0,0,12"/>
                                     <Button x:Name="PlayerButton" Content="Запустить" Click="LaunchPlayer_Click" Background="#7768E8" BorderBrush="#8E82FF"/>
                                 </StackPanel>
                             </Border>
                             <Border Grid.Column="1" Background="#111827" CornerRadius="16" Padding="16" Margin="6,0,0,0">
                                 <StackPanel>
-                                    <TextBlock Text="ROBLOX STUDIO" Foreground="#8D95B7" FontSize="10" FontWeight="Bold"/>
-                                    <TextBlock Text="Создавать" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,3"/>
+                                    <TextBlock Text="STUDIO" Foreground="#8D95B7" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="Studio" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,3"/>
                                     <TextBlock x:Name="StudioStatus" Text="Поиск установки…" Foreground="#929BB9" FontSize="11" Margin="0,0,0,12"/>
                                     <Button x:Name="StudioButton" Content="Открыть Studio" Click="LaunchStudio_Click" Background="#0891B2" BorderBrush="#38BDF8"/>
                                 </StackPanel>
